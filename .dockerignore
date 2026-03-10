@@ -1,0 +1,4 @@
+node_modules
+car-company-system/node_modules
+.env
+.git
