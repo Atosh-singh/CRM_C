@@ -1,5 +1,6 @@
 const { Role } = require("../../models/Role");
 const { Permission } = require("../../models/Permission");
+const { clearCache } = require("../../utils/cacheInvalidator"); // ✅ ADD
 
 const createRole = async (req, res) => {
   try {
@@ -19,7 +20,6 @@ const createRole = async (req, res) => {
       });
     }
 
-    // Optional: Validate permissions exist
     const validPermissions = await Permission.find({
       _id: { $in: permissions }
     });
@@ -35,6 +35,9 @@ const createRole = async (req, res) => {
       description,
       permissions
     });
+
+    await clearCache("roles"); // ✅ ADD
+    await clearCache("users"); // ✅ ADD (role affects users)
 
     return res.status(201).json(role);
 

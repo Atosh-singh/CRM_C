@@ -1,5 +1,6 @@
 const { Role } = require("../../models/Role");
 const { Permission } = require("../../models/Permission");
+const { clearCache } = require("../../utils/cacheInvalidator"); // ✅ ADD
 
 const updateRole = async (req, res) => {
 
@@ -11,14 +12,12 @@ const updateRole = async (req, res) => {
     return res.status(404).json({ message: "Role not found" });
   }
 
-  // Optional: prevent editing Admin role
   if (role.name === "Admin") {
     return res.status(403).json({
       message: "Admin role cannot be modified"
     });
   }
 
-  // Validate permissions if provided
   if (permissions) {
 
     if (!Array.isArray(permissions)) {
@@ -27,7 +26,6 @@ const updateRole = async (req, res) => {
       });
     }
 
-    // Optional: validate against Permission collection
     const validPermissions = await Permission.find({
       name: { $in: permissions }
     });
@@ -45,6 +43,9 @@ const updateRole = async (req, res) => {
   if (description) role.description = description;
 
   await role.save();
+
+  await clearCache("roles"); // ✅ ADD
+  await clearCache("users"); // ✅ ADD
 
   res.json(role);
 };

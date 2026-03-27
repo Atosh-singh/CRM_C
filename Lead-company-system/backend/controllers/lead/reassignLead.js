@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const { Lead } = require("../../models/Lead");
 const { User } = require("../../models/User");
+const { clearCache } = require("../../utils/cacheInvalidator");
 
 const reassignLead = async (req, res) => {
   const session = await mongoose.startSession();
@@ -74,10 +75,14 @@ const reassignLead = async (req, res) => {
     await session.commitTransaction();
     session.endSession();
 
+    await clearCache("leads");
+
     res.status(200).json({
       message: "🚀 Lead reassigned successfully",
       data: lead
     });
+
+    
 
   } catch (error) {
     await session.abortTransaction();

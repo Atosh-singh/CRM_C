@@ -1,11 +1,11 @@
 const { Team } = require("../../models/Team");
 const { CarType } = require("../../models/CarType");
+const { clearCache } = require("../../utils/cacheInvalidator"); // ✅ ADD
 
 const createTeam = async (req, res) => {
   try {
     const { name, carTypes } = req.body;
 
-    // 1️⃣ Basic validation
     if (!name || !Array.isArray(carTypes) || carTypes.length === 0) {
       return res.status(400).json({
         success: false,
@@ -13,7 +13,6 @@ const createTeam = async (req, res) => {
       });
     }
 
-    // 2️⃣ Validate CarType ObjectIds
     const validCarTypes = await CarType.find({
       _id: { $in: carTypes },
       enabled: true
@@ -26,7 +25,6 @@ const createTeam = async (req, res) => {
       });
     }
 
-    // 3️⃣ Prevent duplicate team name
     const existingTeam = await Team.findOne({
       name: name.trim(),
       removed: false
@@ -39,11 +37,13 @@ const createTeam = async (req, res) => {
       });
     }
 
-    // 4️⃣ Create team
     const team = await Team.create({
       name: name.trim(),
       carTypes
     });
+
+    await clearCache("teams"); // ✅ ADD
+    await clearCache("users"); // ✅ ADD
 
     res.status(201).json({
       success: true,

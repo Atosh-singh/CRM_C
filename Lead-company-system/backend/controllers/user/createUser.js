@@ -2,6 +2,7 @@ const bcrypt = require("bcrypt");
 const { User } = require("../../models/User");
 const { Role } = require("../../models/Role");
 const { Team } = require("../../models/Team");
+const { clearCache } = require("../../utils/cacheInvalidator");
 
 const createUser = async (req, res) => {
   try {
@@ -61,6 +62,8 @@ const createUser = async (req, res) => {
       role,
       team: team || null
     });
+
+    await clearCache("users"); // ✅ ADD
 
     res.status(201).json({
       success: true,

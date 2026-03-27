@@ -3,6 +3,7 @@ const { teamStats } = require("./teamStats");
 const { userStats } = require("./userStats");
 const { todayLeads } = require("./todayLeads");
 const { monthLeads } = require("./monthLeads");
+const { getDashboard } = require("./getDashboard");
 
 module.exports = {
   overview,
@@ -10,4 +11,5 @@ module.exports = {
   userStats,
   todayLeads,
   monthLeads,
+  getDashboard
 };

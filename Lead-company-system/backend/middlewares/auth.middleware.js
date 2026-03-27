@@ -3,18 +3,28 @@ const { User } = require("../models/User");
 
 const authMiddleware = async (req, res, next) => {
   try {
-    const header = req.headers.authorization;
+
+    
+
+    const header = req.headers.authorization || req.headers.Authorization;
+
+   
 
     if (!header || !header.startsWith("Bearer ")) {
+     
       return res.status(401).json({ message: "Unauthorized" });
     }
 
     const token = header.split(" ")[1];
 
+   
+
     const decoded = jwt.verify(
       token,
       process.env.JWT_ACCESS_SECRET
     );
+
+    
 
     const user = await User.findOne({
       _id: decoded.id || decoded._id,
@@ -22,11 +32,14 @@ const authMiddleware = async (req, res, next) => {
       enabled: true
     }).populate("role");
 
+    
+
     if (!user) {
+    
       return res.status(401).json({ message: "User not active" });
     }
 
-    // 🚀 Attach full context ONCE
+    // Attach user context
     req.user = {
       _id: user._id,
       role: user.role?.name,
@@ -34,9 +47,17 @@ const authMiddleware = async (req, res, next) => {
       permissions: user.role?.permissions || []
     };
 
+   
+
+    const decodedWithoutVerify = jwt.decode(token);
+
+
     next();
 
   } catch (error) {
+
+    
+
     return res.status(401).json({ message: "Unauthorized" });
   }
 };

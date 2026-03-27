@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const leadService = require("../../services/lead.service");
+const { clearCache } = require("../../utils/cacheInvalidator");
 
 const removeLead = async (req, res) => {
   try {
@@ -12,6 +13,7 @@ const removeLead = async (req, res) => {
     }
 
     const result = await leadService.softDeleteLead(id);
+    await clearCache("leads"); // ✅
 
     if (!result) {
       return res.status(404).json({

@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchLeads } from "../redux/slices/leadSlice";
-import LeadTable from "../components/LeadTable";
-import LeadFilters from "../components/LeadFilters";
+import { fetchLeads } from "../../redux/slices/leadSlice";
+import LeadTable from "../../components/LeadTable";
+import LeadFilters from "../../components/LeadFilters";
 
 function Leads() {
 

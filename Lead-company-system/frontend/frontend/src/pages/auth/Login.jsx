@@ -1,6 +1,6 @@
 import { Form, Input, Button, Card, message } from "antd";
-import API from "../api/axios";
-import { useAuth } from "../context/AuthContext";
+import API from "../../api/axios";
+import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 function Login() {
@@ -14,7 +14,12 @@ function Login() {
 
       const res = await API.post("/auth/login", values);
 
-      login(res.data);
+      console.log(res.data);
+
+      login({
+        token: res.data.accessToken,
+        user: res.data.user
+      });
 
       message.success("Login successful");
 
@@ -38,7 +43,7 @@ function Login() {
         </Form.Item>
 
         <Form.Item label="Password" name="password" required>
-          <Input.Password />
+          <Input.Password autoComplete="current-password"/>
         </Form.Item>
 
         <Button type="primary" htmlType="submit" block>

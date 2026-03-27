@@ -7,14 +7,15 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Load user from localStorage on first render
+  // Load user from localStorage
   useEffect(() => {
 
     const storedUser = localStorage.getItem("user");
 
     if (storedUser) {
       try {
-        setUser(JSON.parse(storedUser));
+        const parsedUser = JSON.parse(storedUser);
+        setUser(parsedUser);
       } catch (error) {
         console.error("Invalid user data in localStorage");
         localStorage.removeItem("user");
@@ -26,6 +27,11 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = (data) => {
+
+    if (!data?.token || !data?.user) {
+      console.error("Invalid login response:", data);
+      return;
+    }
 
     localStorage.setItem("token", data.token);
     localStorage.setItem("user", JSON.stringify(data.user));

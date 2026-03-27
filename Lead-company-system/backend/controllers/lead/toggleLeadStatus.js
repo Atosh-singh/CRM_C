@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const leadService = require("../../services/lead.service");
+const { clearCache } = require("../../utils/cacheInvalidator");
 
 const toggleLeadStatus = async (req, res) => {
   try {
@@ -18,6 +19,8 @@ const toggleLeadStatus = async (req, res) => {
         message: "Lead not found",
       });
     }
+
+    await clearCache("leads"); // ✅
 
     res.status(200).json({
       message: "✅ Lead status toggled",

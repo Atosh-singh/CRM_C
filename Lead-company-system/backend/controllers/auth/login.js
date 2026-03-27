@@ -42,7 +42,15 @@ const login = async (req, res) => {
     res.status(200).json({
       message: "Login successful",
       accessToken,
-      refreshToken
+      refreshToken,
+
+        // ✅ Important for frontend
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role?.name || user.role
+      }
     });
 
   } catch (error) {

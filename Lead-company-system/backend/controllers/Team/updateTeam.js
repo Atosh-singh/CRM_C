@@ -1,5 +1,6 @@
 const { Team } = require("../../models/Team");
 const { CarType } = require("../../models/CarType");
+const { clearCache } = require("../../utils/cacheInvalidator"); // ✅ ADD
 
 const updateTeam = async (req, res) => {
   try {
@@ -57,6 +58,9 @@ const updateTeam = async (req, res) => {
     }
 
     await team.save();
+
+    await clearCache("teams"); // ✅ ADD
+await clearCache("users"); // ✅ ADD
 
     res.status(200).json({
       success: true,

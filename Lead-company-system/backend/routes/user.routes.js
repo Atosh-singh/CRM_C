@@ -12,19 +12,24 @@ const {
 
 const authMiddleware = require("../middlewares/auth.middleware");
 const adminMiddleware = require("../middlewares/admin.middleware");
+const cache = require("../middlewares/cache.middleware");
 
-// 🔐 Admin-only routes
-router.use(authMiddleware, adminMiddleware);
+router.use(authMiddleware);
 
-router.post("/", createUser);
-router.get("/", getUsers);
-router.put("/:id", updateUser);
-router.delete("/:id", deleteUser);
+router.post("/", adminMiddleware, createUser);
 
-// 👤 User self password change (only logged-in user)
-router.post("/change-password", authMiddleware, changePassword);
+// ✅ APPLY CACHE HERE
+router.get(
+  "/",
+  adminMiddleware,
+  cache(300, "users"), // ✅ important
+  getUsers
+);
 
-// 👑 Admin reset any user's password
-router.post("/admin-reset-password", adminMiddleware, adminResetPassword);
+router.put("/:id", adminMiddleware, updateUser);
+router.delete("/:id", adminMiddleware, deleteUser);
+
+router.post("/change-password", changePassword);
+router.post("/admin-reset-password/:id", adminMiddleware, adminResetPassword);
 
 module.exports = router;

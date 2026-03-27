@@ -1,6 +1,6 @@
 import { Form, Input, Button, Card, message } from "antd";
 
-import API from "../api/axios";
+import API from "../../api/axios";
 
 function Signup() {
   const onFinish = async (values) => {

@@ -1,8 +1,8 @@
 const { Lead } = require("../../models/Lead");
+const { clearCache } = require("../../utils/cacheInvalidator");
 
 const updateLeadStatus = async (req, res) => {
   try {
-
     const { id } = req.params;
     const { status } = req.body;
 
@@ -25,19 +25,19 @@ const updateLeadStatus = async (req, res) => {
 
     await lead.save();
 
+    await clearCache("leads"); // ✅
+
     res.json({
       message: "Status updated",
       lead
     });
 
   } catch (error) {
-
     console.error(error);
 
     res.status(500).json({
       message: "Internal Server Error"
     });
-
   }
 };
 

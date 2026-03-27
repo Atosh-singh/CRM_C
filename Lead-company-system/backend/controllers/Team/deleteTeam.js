@@ -1,4 +1,5 @@
 const { Team } = require("../../models/Team");
+const { clearCache } = require("../../utils/cacheInvalidator"); // ✅ ADD
 
 const deleteTeam = async (req, res) => {
   try {
@@ -14,9 +15,11 @@ const deleteTeam = async (req, res) => {
       });
     }
 
-    // 🔥 HARD DELETE
     if (hard === "true") {
       await Team.findByIdAndDelete(id);
+
+      await clearCache("teams"); // ✅ ADD
+      await clearCache("users"); // ✅ ADD
 
       return res.status(200).json({
         success: true,
@@ -24,10 +27,12 @@ const deleteTeam = async (req, res) => {
       });
     }
 
-    // 🔥 SOFT DELETE (Default)
     team.removed = true;
     team.enabled = false;
     await team.save();
+
+    await clearCache("teams"); // ✅ ADD
+    await clearCache("users"); // ✅ ADD
 
     return res.status(200).json({
       success: true,

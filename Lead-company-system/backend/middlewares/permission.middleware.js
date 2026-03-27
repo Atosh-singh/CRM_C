@@ -1,30 +1,42 @@
 const { User } = require("../models/User");
 
 const permissionMiddleware = (requiredPermission) => {
-  return async (req, res, next) => {
+  return (req, res, next) => {
     try {
 
-  // 🚀 SUPER ADMIN BYPASS
-    if (req.user.role === "SUPER_ADMIN") {
-      return next();
-    }
+      if (!req.user) {
+        return res.status(401).json({
+          message: "Unauthorized"
+        });
+      }
 
-    // 🚀 ADMIN FULL ACCESS
-    if (req.user.role === "ADMIN") {
-      return next();
-    }
+      // 🚀 SUPER_ADMIN bypass
+      if (req.user.role === "SUPER_ADMIN") {
+        return next();
+      }
 
-    // 🔐 Normal Permission Check
-    if (!req.user.permissions.includes(requiredPermission)) {
-      return res.status(403).json({ message: "Access denied" });
-    }
+      // 🚀 ADMIN bypass
+      if (req.user.role === "ADMIN") {
+        return next();
+      }
 
-    next();
-  } catch (error) {
+      // 🔐 Permission check
+      if (!req.user.permissions || !req.user.permissions.includes(requiredPermission)) {
+        return res.status(403).json({
+          message: "Access denied"
+        });
+      }
+
+      next();
+
+    } catch (error) {
+
       console.error("Permission Middleware Error:", error);
+
       return res.status(500).json({
         message: "Internal Server Error"
       });
+
     }
   };
 };

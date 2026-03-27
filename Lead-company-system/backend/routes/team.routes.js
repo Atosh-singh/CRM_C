@@ -10,6 +10,7 @@ const {
 
 const authMiddleware = require("../middlewares/auth.middleware");
 const permissionMiddleware = require("../middlewares/permission.middleware");
+const cache = require("../middlewares/cache.middleware");
 
 router.post(
   "/",
@@ -22,6 +23,7 @@ router.get(
   "/",
   authMiddleware,
   permissionMiddleware("VIEW_TEAM"),
+  cache(300, "teams"), // ✅ REDIS ADDED (5 min cache)
   getTeams
 );
 
