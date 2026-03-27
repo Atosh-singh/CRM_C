@@ -1,6 +1,7 @@
 const { Car } = require("../../models/Car");
 const { CarType } = require("../../models/CarType");
 const slugify = require("slugify");
+const { clearCache } = require("../../utils/cacheInvalidator"); // ✅ ADD
 
 const updateCar = async (req, res) => {
   try {
@@ -52,6 +53,10 @@ const updateCar = async (req, res) => {
     Object.assign(car, rest);
 
     await car.save();
+
+    
+    await clearCache("cars"); // ✅ ADD
+await clearCache("dashboard"); // ✅ ADD
 
     res.status(200).json({
       success: true,

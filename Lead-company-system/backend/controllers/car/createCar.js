@@ -1,6 +1,7 @@
 const { Car } = require("../../models/Car");
 const { CarType } = require("../../models/CarType");
 const slugify = require("slugify");
+const { clearCache } = require("../../utils/cacheInvalidator"); // ✅ ADD
 
 const createCar = async (req, res) => {
   try {
@@ -14,7 +15,7 @@ const createCar = async (req, res) => {
       mileage,
       engine,
       showroom,
-      image
+        image: imageName // ✅ UPDATED
     } = req.body;
 
     if (!name || !carType || !price || !fuelType || !transmission) {
@@ -60,6 +61,9 @@ const createCar = async (req, res) => {
       showroom,
       image
     });
+
+await clearCache("cars"); // ✅ ADD
+await clearCache("dashboard"); // ✅ ADD
 
     res.status(201).json({
       success: true,

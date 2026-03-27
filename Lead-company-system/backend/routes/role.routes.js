@@ -10,6 +10,9 @@ const {
 
 const authMiddleware = require("../middlewares/auth.middleware");
 const permissionMiddleware = require("../middlewares/permission.middleware");
+const cache = require("../middlewares/cache.middleware");
+
+// router.use(authMiddleware);
 
 // 🔐 Permission based role management
 
@@ -24,6 +27,7 @@ router.get(
   "/",
   authMiddleware,
   permissionMiddleware("VIEW_ROLE"),
+  cache(300, "roles"),
   getRoles
 );
 

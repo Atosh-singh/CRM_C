@@ -1,4 +1,11 @@
-import { Button } from "antd";
+import { Input, Avatar, Badge, Dropdown } from "antd";
+import {
+  BellOutlined,
+  UserOutlined,
+  LogoutOutlined,
+  SearchOutlined
+} from "@ant-design/icons";
+
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
@@ -12,23 +19,63 @@ function Navbar() {
     navigate("/login");
   };
 
+  const items = [
+    {
+      key: "profile",
+      label: (
+        <div>
+          <div style={{ fontWeight: 600 }}>{user?.name}</div>
+          <div style={{ fontSize: 12 }}>{user?.role}</div>
+        </div>
+      )
+    },
+    { type: "divider" },
+    {
+      key: "logout",
+      icon: <LogoutOutlined />,
+      label: "Logout",
+      onClick: handleLogout
+    }
+  ];
+
   return (
-    <div className="bg-white shadow p-4 flex justify-between items-center">
+    <div
+      style={{
+        height: 64,
+        background: "#fff",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        padding: "0 24px",
+        boxShadow: "0 2px 8px rgba(0,0,0,0.06)"
+      }}
+    >
 
-      <h2 className="font-semibold text-lg">CRM Dashboard</h2>
+      {/* Search */}
+      <Input
+        prefix={<SearchOutlined />}
+        placeholder="Search leads..."
+        style={{
+          width: 300,
+          borderRadius: 6
+        }}
+      />
 
-      <div className="flex items-center gap-4">
+      {/* Right Side */}
+      <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
 
-        <span className="text-gray-600">
-          {user?.name || "Admin"}
-        </span>
+        <Badge count={3}>
+          <BellOutlined style={{ fontSize: 18 }} />
+        </Badge>
 
-        <Button danger onClick={handleLogout}>
-          Logout
-        </Button>
+        <Dropdown menu={{ items }} trigger={["click"]}>
+          <div style={{ cursor: "pointer", display: "flex", gap: 10 }}>
+            <Avatar icon={<UserOutlined />} />
+            <span>{user?.name}</span>
+          </div>
+        </Dropdown>
 
       </div>
-
     </div>
   );
 }

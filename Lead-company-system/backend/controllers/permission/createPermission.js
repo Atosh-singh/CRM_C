@@ -1,4 +1,5 @@
 const { Permission } = require("../../models/Permission");
+const { clearCache } = require("../../utils/cacheInvalidator"); // ✅ ADD
 
 const createPermission = async (req, res) => {
 
@@ -14,6 +15,9 @@ const createPermission = async (req, res) => {
     name,
     description
   });
+
+  await clearCache("permissions"); // ✅ ADD
+  await clearCache("roles"); // ✅ ADD
 
   res.status(201).json(permission);
 };

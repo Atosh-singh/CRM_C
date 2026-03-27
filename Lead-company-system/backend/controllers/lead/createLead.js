@@ -1,4 +1,5 @@
 const leadService = require("../../services/lead.service");
+const { clearCache } = require("../../utils/cacheInvalidator");
 
 const createLead = async (req, res) => {
   try {
@@ -36,6 +37,7 @@ const createLead = async (req, res) => {
       phone,
       car
     });
+    await clearCache("leads"); // ✅
 
     return res.status(201).json({
       success: true,

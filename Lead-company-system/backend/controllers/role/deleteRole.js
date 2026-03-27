@@ -1,4 +1,5 @@
 const { Role } = require("../../models/Role");
+const { clearCache } = require("../../utils/cacheInvalidator"); // ✅ ADD
 
 const deleteRole = async (req, res) => {
 
@@ -6,6 +7,9 @@ const deleteRole = async (req, res) => {
     removed: true,
     enabled: false
   });
+
+  await clearCache("roles"); // ✅ ADD
+  await clearCache("users"); // ✅ ADD
 
   res.json({ message: "Role deleted" });
 };

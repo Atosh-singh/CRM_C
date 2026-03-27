@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const { Lead } = require("../../models/Lead");
 const leadService = require("../../services/lead.service");
+const { clearCache } = require("../../utils/cacheInvalidator");
 
 const updateLead = async (req, res) => {
   try {
@@ -27,6 +28,8 @@ const updateLead = async (req, res) => {
 
     // 🚀 Update using service
     const updatedLead = await leadService.updateLead(id, req.body);
+
+    await clearCache("leads"); // ✅
 
     res.status(200).json({
       message: "✅ Lead updated successfully",

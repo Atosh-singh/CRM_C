@@ -7,6 +7,7 @@ const {
 
 const authMiddleware = require("../middlewares/auth.middleware");
 const permissionMiddleware = require("../middlewares/permission.middleware");
+const cache = require("../middlewares/cache.middleware");
 
 router.post(
   "/",
@@ -19,6 +20,7 @@ router.get(
   "/",
   authMiddleware,
   permissionMiddleware("VIEW_CAR_TYPE"),
+  cache(300, "cartypes"),
   getCarTypes
 );
 

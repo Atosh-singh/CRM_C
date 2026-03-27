@@ -1,5 +1,6 @@
 const { CarType } = require("../../models/CarType");
 const slugify = require("slugify");
+const { clearCache } = require("../../utils/cacheInvalidator"); // ✅ ADD
 
 const createCarType = async (req, res) => {
   try {
@@ -28,6 +29,9 @@ const createCarType = async (req, res) => {
       slug,
       description
     });
+
+    await clearCache("teams"); // ✅ ADD
+await clearCache("users"); // ✅ ADD
 
     res.status(201).json({
       success: true,

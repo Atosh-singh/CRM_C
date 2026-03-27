@@ -1,6 +1,7 @@
 const { CarType } = require("../../models/CarType");
 const { Car } = require("../../models/Car");
 const { Team } = require("../../models/Team");
+const { clearCache } = require("../../utils/cacheInvalidator"); // ✅ ADD
 
 const deleteCarType = async (req, res) => {
   try {
@@ -38,6 +39,9 @@ const deleteCarType = async (req, res) => {
     }
 
     await CarType.findByIdAndDelete(id);
+
+    await clearCache("teams"); // ✅ ADD
+await clearCache("users"); // ✅ ADD
 
     res.status(200).json({
       success: true,
