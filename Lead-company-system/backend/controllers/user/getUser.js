@@ -1,4 +1,5 @@
 const { User } = require("../../models/User");
+const { clearCache } = require("../../utils/cacheInvalidator");
 
 const getUsers = async (req, res) => {
   try {

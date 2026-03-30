@@ -31,7 +31,7 @@ function Cars() {
       setLoading(true);
       const res = await API.get("/cars");
       setCars(res.data.data || res.data);
-    } catch (err) {
+    } catch  {
       message.error("Failed to fetch cars");
     } finally {
       setLoading(false);

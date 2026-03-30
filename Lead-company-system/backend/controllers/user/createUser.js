@@ -8,6 +8,10 @@ const createUser = async (req, res) => {
   try {
     let { name, email, password, role, team } = req.body;
 
+    // ✅ Cloudinary image
+    const image = req.file?.path || null;
+    const image_public_id = req.file?.filename || null;
+
     if (!name || !email || !password || !role) {
       return res.status(400).json({
         success: false,
@@ -60,10 +64,14 @@ const createUser = async (req, res) => {
       email,
       password: hashedPassword,
       role,
-      team: team || null
+      team: team || null,
+
+      // ✅ NEW
+      image,
+      image_public_id
     });
 
-    await clearCache("users"); // ✅ ADD
+    await clearCache("users");
 
     res.status(201).json({
       success: true,

@@ -1,22 +1,28 @@
 const { Car } = require("../../models/Car");
 const { CarType } = require("../../models/CarType");
 const slugify = require("slugify");
-const { clearCache } = require("../../utils/cacheInvalidator"); // ✅ ADD
+const { clearCache } = require("../../utils/cacheInvalidator");
 
 const createCar = async (req, res) => {
   try {
     const {
       name,
-      carType, // slug expected
+      carType,
       price,
       fuelType,
       transmission,
       seatingCapacity,
       mileage,
       engine,
-      showroom,
-        image: imageName // ✅ UPDATED
+      showroom
     } = req.body;
+
+    // ✅ Cloudinary files
+    const image = req.files?.image?.[0]?.path || null;
+    const image_public_id = req.files?.image?.[0]?.filename || null;
+
+    const video = req.files?.video?.[0]?.path || null;
+    const video_public_id = req.files?.video?.[0]?.filename || null;
 
     if (!name || !carType || !price || !fuelType || !transmission) {
       return res.status(400).json({
@@ -59,11 +65,16 @@ const createCar = async (req, res) => {
       mileage,
       engine,
       showroom,
-      image
+
+      // ✅ Save Cloudinary data
+      image,
+      image_public_id,
+      video,
+      video_public_id
     });
 
-await clearCache("cars"); // ✅ ADD
-await clearCache("dashboard"); // ✅ ADD
+    await clearCache("cars");
+    await clearCache("dashboard");
 
     res.status(201).json({
       success: true,

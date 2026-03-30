@@ -14,6 +14,8 @@ app.use(
   })
 );
 
+
+// Upload MULTER
 app.use("/uploads", express.static("uploads"));
 
 // DB connection
