@@ -1,7 +1,8 @@
+const cloudinary = require("../../config/cloudinary");
 const { Car } = require("../../models/Car");
 const { CarType } = require("../../models/CarType");
 const slugify = require("slugify");
-const { clearCache } = require("../../utils/cacheInvalidator"); // ✅ ADD
+const { clearCache } = require("../../utils/cacheInvalidator");
 
 const updateCar = async (req, res) => {
   try {
@@ -16,6 +17,7 @@ const updateCar = async (req, res) => {
       });
     }
 
+    // ✅ HANDLE NAME + SLUG
     if (name) {
       const slug = slugify(name.trim(), { lower: true });
 
@@ -35,6 +37,7 @@ const updateCar = async (req, res) => {
       car.slug = slug;
     }
 
+    // ✅ HANDLE CAR TYPE
     if (carType) {
       const type = await CarType.findOne({
         slug: carType.toLowerCase()
@@ -50,13 +53,36 @@ const updateCar = async (req, res) => {
       car.carType = type._id;
     }
 
+    // ✅ HANDLE IMAGE UPDATE
+    if (req.files?.image) {
+      // delete old
+      if (car.image_public_id) {
+        await cloudinary.uploader.destroy(car.image_public_id);
+      }
+
+      car.image = req.files.image[0].path;
+      car.image_public_id = req.files.image[0].filename;
+    }
+
+    // ✅ HANDLE VIDEO UPDATE
+    if (req.files?.video) {
+      if (car.video_public_id) {
+        await cloudinary.uploader.destroy(car.video_public_id, {
+          resource_type: "video"
+        });
+      }
+
+      car.video = req.files.video[0].path;
+      car.video_public_id = req.files.video[0].filename;
+    }
+
+    // ✅ OTHER FIELDS
     Object.assign(car, rest);
 
     await car.save();
 
-    
-    await clearCache("cars"); // ✅ ADD
-await clearCache("dashboard"); // ✅ ADD
+    await clearCache("cars");
+    await clearCache("dashboard");
 
     res.status(200).json({
       success: true,

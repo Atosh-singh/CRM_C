@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const upload = require("../middlewares/upload"); // ✅ ADD
 
 const {
   createUser,
@@ -16,19 +17,34 @@ const cache = require("../middlewares/cache.middleware");
 
 router.use(authMiddleware);
 
-router.post("/", adminMiddleware, createUser);
+// ✅ CREATE USER (WITH IMAGE)
+router.post(
+  "/",
+  adminMiddleware,
+  upload.single("image"), // ✅ ADD THIS
+  createUser
+);
 
-// ✅ APPLY CACHE HERE
+// ✅ GET USERS (CACHED)
 router.get(
   "/",
   adminMiddleware,
-  cache(300, "users"), // ✅ important
+  cache(300, "users"),
   getUsers
 );
 
-router.put("/:id", adminMiddleware, updateUser);
+// ✅ UPDATE USER (WITH IMAGE REPLACE)
+router.put(
+  "/:id",
+  adminMiddleware,
+  upload.single("image"), // ✅ ADD THIS
+  updateUser
+);
+
+// DELETE USER
 router.delete("/:id", adminMiddleware, deleteUser);
 
+// PASSWORD ROUTES (UNCHANGED)
 router.post("/change-password", changePassword);
 router.post("/admin-reset-password/:id", adminMiddleware, adminResetPassword);
 

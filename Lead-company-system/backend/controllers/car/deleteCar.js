@@ -1,5 +1,6 @@
+const cloudinary = require("../../config/cloudinary");
 const { Car } = require("../../models/Car");
-const { clearCache } = require("../../utils/cacheInvalidator"); // ✅ ADD
+const { clearCache } = require("../../utils/cacheInvalidator");
 
 const deleteCar = async (req, res) => {
   try {
@@ -12,10 +13,22 @@ const deleteCar = async (req, res) => {
       });
     }
 
+    // ✅ DELETE IMAGE FROM CLOUDINARY
+    if (car.image_public_id) {
+      await cloudinary.uploader.destroy(car.image_public_id);
+    }
+
+    // ✅ DELETE VIDEO FROM CLOUDINARY
+    if (car.video_public_id) {
+      await cloudinary.uploader.destroy(car.video_public_id, {
+        resource_type: "video"
+      });
+    }
+
     await car.deleteOne();
 
-    await clearCache("cars"); // ✅ ADD
-await clearCache("dashboard"); // ✅ ADD
+    await clearCache("cars");
+    await clearCache("dashboard");
 
     res.status(200).json({
       success: true,

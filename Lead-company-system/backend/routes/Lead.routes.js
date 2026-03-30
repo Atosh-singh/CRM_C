@@ -12,12 +12,14 @@ const {
 
 const authMiddleware = require("../middlewares/auth.middleware");
 const permissionMiddleware = require("../middlewares/permission.middleware");
+const cache = require("../middlewares/cache.middleware");
 
 router.use(authMiddleware);
 
 router.get(
   "/",
   permissionMiddleware("VIEW_LEAD"),
+  cache(60, "leads"), // ✅ important
   getLead
 );
 

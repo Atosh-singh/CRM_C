@@ -1,16 +1,30 @@
+const cloudinary = require("../../config/cloudinary");
 const { User } = require("../../models/User");
 const { clearCache } = require("../../utils/cacheInvalidator");
 
 const deleteUser = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
 
-  await User.findByIdAndUpdate(req.params.id, {
-    removed: true,
-    enabled: false
-  });
+    if (user && user.image_public_id) {
+      await cloudinary.uploader.destroy(user.image_public_id);
+    }
 
-  await clearCache("users"); // ✅ ADD
+    await User.findByIdAndUpdate(req.params.id, {
+      removed: true,
+      enabled: false
+    });
 
-  res.json({ message: "User deleted" });
+    await clearCache("users");
+
+    res.json({ message: "User deleted" });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: "Something went wrong"
+    });
+  }
 };
 
 module.exports = { deleteUser };
