@@ -4,6 +4,7 @@ const { updateUser } = require("./updateUser");
 const { deleteUser } = require("./deleteUser");
 const { changePassword } = require("./changePassword");
 const { adminResetPassword } = require("./adminResetPassword");
+const { updateMyProfile } = require("./updateMyProfile"); // ✅ ADD
 
 module.exports = {
   createUser,
@@ -12,4 +13,5 @@ module.exports = {
   deleteUser,
   changePassword,
   adminResetPassword,
+    updateMyProfile, // ✅ ADD
 };

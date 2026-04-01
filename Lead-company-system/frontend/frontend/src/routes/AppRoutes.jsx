@@ -12,11 +12,11 @@ import Cars from "../pages/cars/Cars";
 
 import Users from "../pages/users/Users";
 
-
-
-
 import CreateRole from "../pages/roles/CreateRole";
 import CreatePermission from "../pages/permissions/CreatePermission";
+
+import Profile from "../pages/users/Profile";
+import EditProfile from "../pages/users/EditProfile";
 
 function AppRoutes() {
   return (
@@ -26,8 +26,10 @@ function AppRoutes() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
 
-        {/* Protected Routes */}
 
+        
+
+        {/* Protected Routes */}
         <Route
           path="/dashboard"
           element={
@@ -50,63 +52,85 @@ function AppRoutes() {
           }
         />
 
-
-      <Route
-  path="/users"
-  element={
-    <ProtectedRoute>
-      <CRMLayout>
-        <Users />
-      </CRMLayout>
-    </ProtectedRoute>
-  }
-/>
-
-     <Route
-  path="/users/create"
-  element={
-    <ProtectedRoute>
-      <CRMLayout>
-        <CreateUser />
-      </CRMLayout>
-    </ProtectedRoute>
-  }
-/>
-
-<Route
-  path="/roles/create"
-  element={
-    <ProtectedRoute>
-      <CRMLayout>
-        <CreateRole />
-      </CRMLayout>
-    </ProtectedRoute>
-  }
-/>
-
-<Route
-  path="/permissions/create"
-  element={
-    <ProtectedRoute>
-      <CRMLayout>
-        <CreatePermission />
-      </CRMLayout>
-    </ProtectedRoute>
-  }
-/>
+        <Route
+          path="/users"
+          element={
+            <ProtectedRoute>
+              <CRMLayout>
+                <Users />
+              </CRMLayout>
+            </ProtectedRoute>
+          }
+        />
 
         <Route
-  path="/cars"
+          path="/users/create"
+          element={
+            <ProtectedRoute>
+              <CRMLayout>
+                <CreateUser />
+              </CRMLayout>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/roles/create"
+          element={
+            <ProtectedRoute>
+              <CRMLayout>
+                <CreateRole />
+              </CRMLayout>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/permissions/create"
+          element={
+            <ProtectedRoute>
+              <CRMLayout>
+                <CreatePermission />
+              </CRMLayout>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/cars"
+          element={
+            <ProtectedRoute>
+              <CRMLayout>
+                <Cars />
+              </CRMLayout>
+            </ProtectedRoute>
+          }
+        />
+
+
+     {/* Profile Routes */}
+<Route
+  path="/profile"
   element={
     <ProtectedRoute>
       <CRMLayout>
-        <Cars />
+        <Profile />
       </CRMLayout>
     </ProtectedRoute>
   }
 />
 
-      
+<Route
+  path="/edit-profile"
+  element={
+    <ProtectedRoute>
+      <CRMLayout>
+        <EditProfile />
+      </CRMLayout>
+    </ProtectedRoute>
+  }
+/>
+
       </Routes>
     </BrowserRouter>
   );

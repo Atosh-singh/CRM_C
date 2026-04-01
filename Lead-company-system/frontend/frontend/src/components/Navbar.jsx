@@ -1,16 +1,19 @@
-import { Input, Avatar, Badge, Dropdown } from "antd";
+import { Input, Avatar, Badge, Dropdown, Space, Typography } from "antd";
 import {
   BellOutlined,
   UserOutlined,
   LogoutOutlined,
-  SearchOutlined
+  SearchOutlined,
+  SettingOutlined,
+  ProfileOutlined
 } from "@ant-design/icons";
 
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
-function Navbar() {
+const { Text } = Typography;
 
+function Navbar() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -19,21 +22,41 @@ function Navbar() {
     navigate("/login");
   };
 
+  // ✅ Dropdown Menu (Enhanced)
   const items = [
     {
-      key: "profile",
+      key: "user-info",
       label: (
-        <div>
+        <div style={{ lineHeight: 1.4 }}>
           <div style={{ fontWeight: 600 }}>{user?.name}</div>
-          <div style={{ fontSize: 12 }}>{user?.role}</div>
+          <Text type="secondary" style={{ fontSize: 12 }}>
+            {user?.email}
+          </Text>
         </div>
       )
     },
     { type: "divider" },
+
+    {
+      key: "profile",
+      icon: <ProfileOutlined />,
+      label: "View Profile",
+      onClick: () => navigate("/profile")  
+    },
+    {
+      key: "edit",
+      icon: <SettingOutlined />,
+      label: "Edit Profile",
+      onClick: () => navigate("/edit-profile")
+    },
+
+    { type: "divider" },
+
     {
       key: "logout",
       icon: <LogoutOutlined />,
       label: "Logout",
+      danger: true,
       onClick: handleLogout
     }
   ];
@@ -47,32 +70,54 @@ function Navbar() {
         alignItems: "center",
         justifyContent: "space-between",
         padding: "0 24px",
-        boxShadow: "0 2px 8px rgba(0,0,0,0.06)"
+        boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
+        position: "sticky",
+        top: 0,
+        zIndex: 100
       }}
     >
-
-      {/* Search */}
+      {/* 🔍 Search */}
       <Input
         prefix={<SearchOutlined />}
-        placeholder="Search leads..."
+        placeholder="Search leads, users, deals..."
         style={{
-          width: 300,
-          borderRadius: 6
+          width: 320,
+          borderRadius: 8
         }}
       />
 
-      {/* Right Side */}
-      <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
-
-        <Badge count={3}>
-          <BellOutlined style={{ fontSize: 18 }} />
+      {/* 🔔 Right Side */}
+      <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
+        
+        {/* Notifications */}
+        <Badge count={3} size="small">
+          <BellOutlined style={{ fontSize: 20, cursor: "pointer" }} />
         </Badge>
 
-        <Dropdown menu={{ items }} trigger={["click"]}>
-          <div style={{ cursor: "pointer", display: "flex", gap: 10 }}>
-            <Avatar icon={<UserOutlined />} />
-            <span>{user?.name}</span>
-          </div>
+        {/* 👤 Profile */}
+        <Dropdown menu={{ items }} trigger={["click"]} placement="bottomRight">
+          <Space
+            style={{
+              cursor: "pointer",
+              padding: "6px 10px",
+              borderRadius: 8,
+              transition: "0.2s",
+            }}
+            className="hover-bg"
+          >
+            <Avatar
+              size={40}
+              src={user?.image} // ✅ Cloudinary image
+              icon={<UserOutlined />}
+            />
+
+            <div style={{ lineHeight: 1 }}>
+              <div style={{ fontWeight: 500 }}>{user?.name}</div>
+              <Text type="secondary" style={{ fontSize: 12 }}>
+                {user?.role?.name || user?.role}
+              </Text>
+            </div>
+          </Space>
         </Dropdown>
 
       </div>

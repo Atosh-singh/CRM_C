@@ -3,15 +3,12 @@ import { createContext, useContext, useState, useEffect } from "react";
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   // Load user from localStorage
   useEffect(() => {
-
     const storedUser = localStorage.getItem("user");
-
     if (storedUser) {
       try {
         const parsedUser = JSON.parse(storedUser);
@@ -23,11 +20,9 @@ export const AuthProvider = ({ children }) => {
     }
 
     setLoading(false);
-
   }, []);
 
   const login = (data) => {
-
     if (!data?.token || !data?.user) {
       console.error("Invalid login response:", data);
       return;
@@ -40,7 +35,6 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
-
     localStorage.removeItem("token");
     localStorage.removeItem("user");
 
@@ -48,7 +42,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, loading }}>
+    <AuthContext.Provider value={{ user,  setUser, login, logout, loading }}>
       {children}
     </AuthContext.Provider>
   );

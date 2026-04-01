@@ -6,6 +6,7 @@ import {
   Tooltip,
   CartesianGrid
 } from "recharts";
+import Api from "../api/axios"
 
 function LeadsChart() {
 
