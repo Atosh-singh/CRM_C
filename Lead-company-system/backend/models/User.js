@@ -21,7 +21,7 @@ const userSchema = new mongoose.Schema(
     email: {
       type: String,
       required: true,
-      unique: true, // login lookup
+      unique: true,
       lowercase: true,
       trim: true
     },
@@ -36,16 +36,29 @@ const userSchema = new mongoose.Schema(
       ref: "Role",
       required: true
     },
-team: {
-  type: mongoose.Schema.Types.ObjectId,
-  ref: "Team",
-  default: null
-},
 
-activeLeads: {
-  type: Number,
-  default: 0
-}
+    team: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Team",
+      default: null
+    },
+
+    activeLeads: {
+      type: Number,
+      default: 0
+    },
+
+    // ✅ ADD THESE
+    image: {
+      type: String,
+      default: null
+    },
+
+    image_public_id: {
+      type: String,
+      default: null
+    }
+
   },
   { timestamps: true }
 );

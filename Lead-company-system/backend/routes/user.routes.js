@@ -9,6 +9,7 @@ const {
   deleteUser,
   changePassword,
   adminResetPassword,
+  updateMyProfile
 } = require("../controllers/user");
 
 const authMiddleware = require("../middlewares/auth.middleware");
@@ -33,6 +34,13 @@ router.get(
   getUsers
 );
 
+// User update profile 
+router.put(
+  "/me",
+  upload.single("image"),
+  updateMyProfile
+);
+
 // ✅ UPDATE USER (WITH IMAGE REPLACE)
 router.put(
   "/:id",
@@ -40,6 +48,9 @@ router.put(
   upload.single("image"), // ✅ ADD THIS
   updateUser
 );
+
+
+
 
 // DELETE USER
 router.delete("/:id", adminMiddleware, deleteUser);
