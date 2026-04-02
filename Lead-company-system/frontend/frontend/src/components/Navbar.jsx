@@ -1,15 +1,17 @@
-import { Input, Avatar, Badge, Dropdown, Space, Typography } from "antd";
+import {  Avatar, Badge, Dropdown, Space, Typography } from "antd";
 import {
   BellOutlined,
   UserOutlined,
   LogoutOutlined,
-  SearchOutlined,
+ 
   SettingOutlined,
   ProfileOutlined
 } from "@ant-design/icons";
 
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+
+import logo from "../assets/LOGO.png"
 
 const { Text } = Typography;
 
@@ -62,29 +64,32 @@ function Navbar() {
   ];
 
   return (
-    <div
-      style={{
-        height: 64,
-        background: "#fff",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        padding: "0 24px",
-        boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
-        position: "sticky",
-        top: 0,
-        zIndex: 100
-      }}
-    >
-      {/* 🔍 Search */}
-      <Input
-        prefix={<SearchOutlined />}
-        placeholder="Search leads, users, deals..."
+   <div
+    style={{
+      height: 64,
+      background: "#fff",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "space-between",
+      padding: "0 24px",
+      boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
+      position: "sticky",
+      top: 0,
+      zIndex: 100
+    }}
+  >
+    {/* ✅ LEFT SIDE - LOGO ONLY */}
+    <div style={{ display: "flex", alignItems: "center" }}>
+      <img
+        src={logo}
+        alt="Company Logo"
         style={{
-          width: 320,
-          borderRadius: 8
+          height: 40,
+          cursor: "pointer"
         }}
+        onClick={() => navigate("/dashboard")} // ✅ redirect to dashboard
       />
+    </div>
 
       {/* 🔔 Right Side */}
       <div style={{ display: "flex", alignItems: "center", gap: 24 }}>

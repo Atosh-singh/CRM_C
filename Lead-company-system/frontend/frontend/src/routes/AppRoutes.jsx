@@ -11,12 +11,14 @@ import CreateUser from "../pages/users/CreateUser";
 import Cars from "../pages/cars/Cars";
 
 import Users from "../pages/users/Users";
+import Teams from "../pages/teams/Teams"
 
 import CreateRole from "../pages/roles/CreateRole";
 import CreatePermission from "../pages/permissions/CreatePermission";
 
 import Profile from "../pages/users/Profile";
 import EditProfile from "../pages/users/EditProfile";
+
 
 function AppRoutes() {
   return (
@@ -106,6 +108,19 @@ function AppRoutes() {
             </ProtectedRoute>
           }
         />
+
+        {/* Team Routes */}
+
+<Route
+  path="/teams"
+  element={
+    <ProtectedRoute>
+      <CRMLayout>
+        <Teams />
+      </CRMLayout>
+    </ProtectedRoute>
+  }
+/>
 
 
      {/* Profile Routes */}

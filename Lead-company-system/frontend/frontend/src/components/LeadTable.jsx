@@ -17,7 +17,7 @@ function LeadTable({ leads, pagination, loading, setFilters }) {
         ...prev
       }));
 
-    } catch (error) {
+    } catch {
 
       message.error("Failed to update status");
 

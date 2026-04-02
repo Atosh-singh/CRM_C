@@ -32,6 +32,13 @@ export const menuConfig = [
     permission: "VIEW_CAR"
   },
 
+     {
+        key: "/teams",
+        icon: <TeamOutlined />,
+        label: "Teams",
+        permission: "VIEW_TEAMS"
+      },
+
   {
     type: "divider"
   },
@@ -49,6 +56,7 @@ export const menuConfig = [
         label: "Users",
         permission: "VIEW_USERS"
       },
+     
 
       {
         key: "/users/create",

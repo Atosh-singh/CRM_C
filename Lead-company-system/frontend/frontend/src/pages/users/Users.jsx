@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { Table, Modal, Descriptions, message } from "antd";
 import API from "../../api/axios";
+import PageToolbar from "../../components/PageToolbar";
 
 function Users() {
-
   const [users, setUsers] = useState([]);
+  const [filteredUsers, setFilteredUsers] = useState([]); // ✅ for search
   const [selectedUser, setSelectedUser] = useState(null);
   const [open, setOpen] = useState(false);
 
@@ -13,21 +14,23 @@ function Users() {
   }, []);
 
   const fetchUsers = async () => {
-
     try {
-
       const res = await API.get("/users");
-
-      console.log("Users:", res.data);
-
       setUsers(res.data || []);
-
+      setFilteredUsers(res.data || []); // ✅ initialize filtered list
     } catch (error) {
-
       message.error("Failed to load users");
-
     }
+  };
 
+  // ✅ SEARCH FUNCTION
+  const handleSearch = (value) => {
+    const filtered = users.filter((user) =>
+      user.name?.toLowerCase().includes(value.toLowerCase()) ||
+      user.email?.toLowerCase().includes(value.toLowerCase())
+    );
+
+    setFilteredUsers(filtered);
   };
 
   const columns = [
@@ -50,19 +53,30 @@ function Users() {
   ];
 
   const handleRowClick = (record) => {
-
     setSelectedUser(record);
     setOpen(true);
-
   };
 
   return (
     <div>
 
-      <h2 style={{marginBottom:20}}>Users</h2>
+      {/* 🔥 TOOLBAR */}
+      <PageToolbar
+        title="Users"
+        showSearch={true}
+        onSearch={handleSearch}
+        actions={[
+          {
+            label: "Add User",
+            type: "primary",
+            onClick: () => console.log("Navigate to create user page")
+          }
+        ]}
+      />
 
+      {/* 📊 TABLE */}
       <Table
-        dataSource={users}
+        dataSource={filteredUsers} // ✅ use filtered data
         columns={columns}
         rowKey="_id"
         onRow={(record) => ({
@@ -70,15 +84,14 @@ function Users() {
         })}
       />
 
+      {/* 📦 MODAL */}
       <Modal
         title="User Details"
         open={open}
         onCancel={() => setOpen(false)}
         footer={null}
       >
-
         {selectedUser && (
-
           <Descriptions column={1} bordered>
 
             <Descriptions.Item label="Name">
@@ -102,9 +115,7 @@ function Users() {
             </Descriptions.Item>
 
           </Descriptions>
-
         )}
-
       </Modal>
 
     </div>

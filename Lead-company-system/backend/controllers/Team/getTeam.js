@@ -1,28 +1,24 @@
 const { Team } = require("../../models/Team");
 const { CarType } = require("../../models/CarType");
+const { User } = require("../../models/User");
 
 const getTeams = async (req, res) => {
   try {
     const { name, carType, enabled } = req.query;
 
-    let filter = {
-      removed: false
-    };
+    let filter = { removed: false };
 
-    // 🔹 Filter by team name
+    // 🔹 Name filter
     if (name) {
-      filter.name = {
-        $regex: name,
-        $options: "i"
-      };
+      filter.name = { $regex: name, $options: "i" };
     }
 
-    // 🔹 Filter by enabled
+    // 🔹 Enabled filter
     if (enabled !== undefined) {
       filter.enabled = enabled === "true";
     }
 
-    // 🔹 Filter by carType slug
+    // 🔹 CarType filter
     if (carType) {
       const type = await CarType.findOne({
         slug: carType.toLowerCase()
@@ -40,12 +36,33 @@ const getTeams = async (req, res) => {
 
     const teams = await Team.find(filter)
       .populate("carTypes", "name slug")
+      .populate("lead", "name email image")
       .sort({ createdAt: -1 });
+
+    // ✅ Attach members + load
+    const teamsWithMembers = await Promise.all(
+      teams.map(async (team) => {
+        const members = await User.find({ team: team._id, removed: false })
+          .select("name email activeLeads image");
+
+        const totalActiveLeads = members.reduce(
+          (sum, user) => sum + (user.activeLeads || 0),
+          0
+        );
+
+        return {
+          ...team.toObject(),
+          members,
+          membersCount: members.length,
+          totalActiveLeads
+        };
+      })
+    );
 
     res.status(200).json({
       success: true,
-      count: teams.length,
-      data: teams
+      count: teamsWithMembers.length,
+      data: teamsWithMembers
     });
 
   } catch (error) {

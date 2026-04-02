@@ -1,5 +1,6 @@
 const { Team } = require("../../models/Team");
-const { clearCache } = require("../../utils/cacheInvalidator"); // ✅ ADD
+const { User } = require("../../models/User");
+const { clearCache } = require("../../utils/cacheInvalidator");
 
 const deleteTeam = async (req, res) => {
   try {
@@ -15,33 +16,37 @@ const deleteTeam = async (req, res) => {
       });
     }
 
-    if (hard === "true") {
-      await Team.findByIdAndDelete(id);
+    // 🔥 Prevent delete if members exist
+    const members = await User.find({ team: id });
 
-      await clearCache("teams"); // ✅ ADD
-      await clearCache("users"); // ✅ ADD
-
-      return res.status(200).json({
-        success: true,
-        message: "Team permanently deleted"
+    if (members.length > 0 && hard !== "true") {
+      return res.status(400).json({
+        success: false,
+        message: "Cannot delete team with active members"
       });
     }
 
-    team.removed = true;
-    team.enabled = false;
-    await team.save();
+    if (hard === "true") {
+      await Team.findByIdAndDelete(id);
+    } else {
+      team.removed = true;
+      team.enabled = false;
+      await team.save();
+    }
 
-    await clearCache("teams"); // ✅ ADD
-    await clearCache("users"); // ✅ ADD
+    await clearCache("teams");
+    await clearCache("users");
 
-    return res.status(200).json({
+    res.status(200).json({
       success: true,
-      message: "Team soft deleted"
+      message: hard === "true"
+        ? "Team permanently deleted"
+        : "Team soft deleted"
     });
 
   } catch (error) {
     console.error("Delete Team Error:", error);
-    return res.status(500).json({
+    res.status(500).json({
       success: false,
       message: "Internal Server Error"
     });

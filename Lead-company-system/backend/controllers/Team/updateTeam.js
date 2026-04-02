@@ -1,11 +1,22 @@
 const { Team } = require("../../models/Team");
 const { CarType } = require("../../models/CarType");
-const { clearCache } = require("../../utils/cacheInvalidator"); // ✅ ADD
+const { User } = require("../../models/User");
+const { clearCache } = require("../../utils/cacheInvalidator");
 
 const updateTeam = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, carTypes } = req.body;
+
+    const {
+      name,
+      description,
+      carTypes,
+      lead,
+      assignmentType,
+      maxLeadsPerUser,
+      priority,
+      enabled
+    } = req.body;
 
     const team = await Team.findById(id);
 
@@ -16,7 +27,7 @@ const updateTeam = async (req, res) => {
       });
     }
 
-    // 🔹 Update name (with duplicate check)
+    // 🔹 Name
     if (name) {
       const existing = await Team.findOne({
         _id: { $ne: id },
@@ -34,33 +45,53 @@ const updateTeam = async (req, res) => {
       team.name = name.trim();
     }
 
-    // 🔹 Update carTypes (slug-based)
-    if (carTypes) {
-      if (!Array.isArray(carTypes) || carTypes.length === 0) {
-        return res.status(400).json({
-          success: false,
-          message: "carTypes must be a non-empty array"
-        });
-      }
+    // 🔹 Description
+    if (description !== undefined) {
+      team.description = description;
+    }
 
-      const foundCarTypes = await CarType.find({
-        slug: { $in: carTypes.map(ct => ct.toLowerCase()) }
+    // 🔹 CarTypes
+    if (carTypes) {
+      const valid = await CarType.find({
+        _id: { $in: carTypes }
       });
 
-      if (foundCarTypes.length !== carTypes.length) {
+      if (valid.length !== carTypes.length) {
         return res.status(400).json({
           success: false,
-          message: "One or more carTypes are invalid"
+          message: "Invalid carTypes"
         });
       }
 
-      team.carTypes = foundCarTypes.map(ct => ct._id);
+      team.carTypes = carTypes;
     }
+
+    // 🔹 Lead
+    if (lead !== undefined) {
+      if (lead) {
+        const user = await User.findById(lead);
+        if (!user) {
+          return res.status(400).json({
+            success: false,
+            message: "Invalid lead"
+          });
+        }
+      }
+      team.lead = lead;
+    }
+
+    // 🔹 Other fields
+    if (assignmentType) team.assignmentType = assignmentType;
+    if (maxLeadsPerUser) team.maxLeadsPerUser = maxLeadsPerUser;
+    if (priority !== undefined) team.priority = priority;
+    if (enabled !== undefined) team.enabled = enabled;
+
+    team.updatedBy = req.user?._id || null;
 
     await team.save();
 
-    await clearCache("teams"); // ✅ ADD
-await clearCache("users"); // ✅ ADD
+    await clearCache("teams");
+    await clearCache("users");
 
     res.status(200).json({
       success: true,
