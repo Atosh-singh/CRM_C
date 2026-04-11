@@ -29,6 +29,10 @@ const leadSchema = new mongoose.Schema(
       ref: "Car"
     },
 
+    interest: String,
+    source: String,
+    locationData: String,
+
     assignedTo: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User"

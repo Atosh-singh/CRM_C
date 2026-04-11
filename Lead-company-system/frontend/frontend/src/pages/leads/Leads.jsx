@@ -1,59 +1,183 @@
 import { useEffect, useState } from "react";
+import { message } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchLeads } from "../../redux/slices/leadSlice";
-import LeadTable from "../../components/LeadTable";
-import LeadFilters from "../../components/LeadFilters";
+
+import {
+  fetchLeads,
+  createLead,
+  updateLead,
+  deleteLead,
+  updateLeadStatus
+} from "../../redux/slices/leadSlice";
+
 import PageToolbar from "../../components/PageToolbar";
+import LeadTable from "../../components/leads/LeadTable";
+import LeadFilters from "../../components/leads/LeadFilters";
+import LeadFormModal from "../../components/leads/LeadFormModal";
+import DeleteLeadModal from "../../components/leads/DeleteLeadModal";
+import LeadDetailsDrawer from "../../components/leads/LeadDetailsDrawer";
 
 function Leads() {
   const dispatch = useDispatch();
-  const { leads, pagination, loading } = useSelector((state) => state.leads);
+
+  const {
+    leads,
+    pagination,
+    loading,
+    createLoading,
+    updateLoading,
+    deleteLoading,
+    error
+  } = useSelector((state) => state.leads);
 
   const [filters, setFilters] = useState({
     page: 1,
     limit: 10,
-    search: "",
-    status: "",        // ✅ future ready
-    assignedTo: ""     // ✅ future ready
+    search: ""
   });
 
-  // ✅ API CALL
+  const [formOpen, setFormOpen] = useState(false);
+  const [detailsOpen, setDetailsOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+
+  const [selectedLead, setSelectedLead] = useState(null);
+  const [editingLead, setEditingLead] = useState(null);
+
   useEffect(() => {
     dispatch(fetchLeads(filters));
-  }, [filters]);
+  }, [dispatch, filters]);
+
+  useEffect(() => {
+    if (error) {
+      message.error(error);
+    }
+  }, [error]);
+
+  const handleCreateClick = () => {
+    setEditingLead(null);
+    setFormOpen(true);
+  };
+
+  const handleEdit = (lead) => {
+    setEditingLead(lead);
+    setFormOpen(true);
+  };
+
+  const handleDeleteClick = (lead) => {
+    setSelectedLead(lead);
+    setDeleteOpen(true);
+  };
+
+  const handleView = (lead) => {
+    setSelectedLead(lead);
+    setDetailsOpen(true);
+  };
+
+  const handleSubmitLead = async (values) => {
+    try {
+      if (editingLead) {
+        await dispatch(
+          updateLead({ id: editingLead._id, leadData: values })
+        ).unwrap();
+        message.success("Lead updated successfully");
+      } else {
+        await dispatch(createLead(values)).unwrap();
+        message.success("Lead created successfully");
+      }
+
+      setFormOpen(false);
+      setEditingLead(null);
+    } catch (err) {
+      message.error(err || "Action failed");
+    }
+  };
+
+  const handleConfirmDelete = async () => {
+    try {
+      await dispatch(deleteLead(selectedLead._id)).unwrap();
+      message.success("Lead deleted successfully");
+      setDeleteOpen(false);
+      setSelectedLead(null);
+    } catch (err) {
+      message.error(err || "Delete failed");
+    }
+  };
+
+  const handleStatusChange = async (lead, status) => {
+    try {
+      await dispatch(
+        updateLeadStatus({ id: lead._id, status })
+      ).unwrap();
+      message.success("Lead status updated");
+    } catch (err) {
+      message.error(err || "Failed to update status");
+    }
+  };
 
   return (
     <div>
-
-      {/* 🔥 SEARCH + BUTTON (TOP RIGHT) */}
       <PageToolbar
+        title="Leads"
         showSearch={true}
         onSearch={(value) =>
           setFilters((prev) => ({
             ...prev,
             search: value,
-            page: 1 // reset page on search
+            page: 1
           }))
         }
         actions={[
           {
             label: "Add Lead",
             type: "primary",
-            onClick: () => console.log("Add Lead Clicked")
+            onClick: handleCreateClick
           }
         ]}
       />
 
-    
+      <LeadFilters filters={filters} setFilters={setFilters} />
 
-      {/* 🔽 TABLE */}
       <LeadTable
         leads={leads}
         pagination={pagination}
         loading={loading}
         setFilters={setFilters}
+        onView={handleView}
+        onEdit={handleEdit}
+        onDelete={handleDeleteClick}
+        onStatusChange={handleStatusChange}
       />
 
+      <LeadFormModal
+        open={formOpen}
+        onCancel={() => {
+          setFormOpen(false);
+          setEditingLead(null);
+        }}
+        onSubmit={handleSubmitLead}
+        initialValues={editingLead}
+        loading={createLoading || updateLoading}
+      />
+
+      <DeleteLeadModal
+        open={deleteOpen}
+        onCancel={() => {
+          setDeleteOpen(false);
+          setSelectedLead(null);
+        }}
+        onConfirm={handleConfirmDelete}
+        loading={deleteLoading}
+        lead={selectedLead}
+      />
+
+      <LeadDetailsDrawer
+        open={detailsOpen}
+        onClose={() => {
+          setDetailsOpen(false);
+          setSelectedLead(null);
+        }}
+        lead={selectedLead}
+      />
     </div>
   );
 }

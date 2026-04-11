@@ -3,7 +3,7 @@ const { clearCache } = require("../../utils/cacheInvalidator");
 
 const createLead = async (req, res) => {
   try {
-    let { name, phone, car, website } = req.body;
+    let { name, phone, car, email, interest, source, locationData, website } = req.body;
 
     // 🛡 Honeypot protection
     if (website) {
@@ -35,7 +35,11 @@ const createLead = async (req, res) => {
     const lead = await leadService.createLead({
       name,
       phone,
-      car
+      car,
+      email,
+      interest,
+      source,
+      locationData
     });
     await clearCache("leads"); // ✅
 

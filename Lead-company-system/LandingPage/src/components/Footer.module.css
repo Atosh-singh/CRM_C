@@ -1,0 +1,115 @@
+.footer {
+  background-color: var(--bg-light);
+  padding: 3rem 1.5rem;
+  padding-bottom: 6rem; /* Extra padding for bottom nav space */
+  border-top: 1px solid var(--border-color);
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.logoSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.logoText {
+  font-weight: 700;
+  font-size: 1.1rem;
+  letter-spacing: 0.1em;
+  color: var(--primary-blue);
+  text-transform: uppercase;
+}
+
+.tagline {
+  font-size: 0.8rem;
+  color: var(--text-light);
+  line-height: 1.5;
+  max-width: 80%;
+}
+
+.links {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+.linkColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  min-width: 120px;
+}
+
+.columnTitle {
+  font-weight: 700;
+  color: var(--primary-blue);
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.link {
+  font-size: 0.85rem;
+  color: var(--text-light);
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.link:hover {
+  text-decoration: underline;
+  color: var(--primary-blue);
+}
+
+.copyright {
+  font-size: 0.7rem;
+  color: var(--text-light);
+  text-align: center;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.copyrightLinks {
+  display: flex;
+  gap: 1rem;
+}
+
+/* --- Desktop Specifics --- */
+@media (min-width: 768px) {
+  .footer {
+    padding: 4rem 5%;
+    padding-bottom: 2rem; /* No bottom nav on desktop */
+  }
+
+  .content {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .logoSection {
+    flex: 1.5;
+    max-width: 300px;
+  }
+
+  .links {
+    flex: 3;
+    justify-content: space-between;
+  }
+
+  .copyright {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 4rem;
+  }
+}

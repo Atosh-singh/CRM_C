@@ -1,0 +1,230 @@
+.section {
+  padding: 3rem 1.5rem;
+  background-color: var(--bg-light);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 2rem;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--primary-blue);
+  margin-bottom: 0.5rem;
+}
+
+.subtitle {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--text-light);
+}
+
+.controls {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.controlButton {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background-color: var(--bg-white);
+  color: var(--text-dark);
+  transition: all 0.2s;
+}
+
+.controlButton:hover {
+  background-color: var(--bg-light);
+  border-color: var(--text-light);
+}
+
+.carousel {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Base Mobile card styling */
+.card {
+  background-color: var(--bg-white);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.mainCardContent {
+  padding: 1.5rem;
+}
+
+.trendingBadge {
+  background-color: #dbeafe;
+  color: #1d4ed8;
+  font-size: 0.6rem;
+  font-weight: 700;
+  padding: 0.2rem 0.6rem;
+  border-radius: 12px;
+  display: inline-block;
+  margin-bottom: 1rem;
+}
+
+.mainCarName {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--primary-blue);
+  margin-bottom: 0.5rem;
+}
+
+.mainCarDesc {
+  font-size: 0.9rem;
+  color: var(--text-light);
+  line-height: 1.5;
+  margin-bottom: 1.5rem;
+}
+
+.mainStats {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  margin-bottom: 1.5rem;
+}
+
+.mainStatRow {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  font-size: 0.85rem;
+  color: var(--text-dark);
+  font-weight: 500;
+}
+
+.statIcon {
+  color: var(--primary-blue);
+}
+
+.configureButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--primary-blue);
+  font-weight: 600;
+  font-size: 0.85rem;
+  border-bottom: 2px solid var(--primary-blue);
+  padding-bottom: 0.2rem;
+  background: none;
+}
+
+.mainImageContainer {
+  height: 250px;
+  background-color: #0b1f3a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.carImageLarge {
+  width: 120%;
+  object-fit: contain;
+  transition: transform 0.5s ease;
+}
+
+.smallCardsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.smallImageContainer {
+  height: 150px;
+  background-color: #0d273a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.carImageSmall {
+  width: 90%;
+  object-fit: contain;
+  transition: transform 0.5s;
+}
+
+.card:hover .carImageLarge,
+.card:hover .carImageSmall {
+  transform: scale(1.05);
+}
+
+.smallCardContent {
+  padding: 1.5rem;
+}
+
+.carName {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--primary-blue);
+  margin-bottom: 0.2rem;
+}
+
+.carDesc {
+  font-size: 0.8rem;
+  color: var(--text-light);
+  margin-bottom: 1rem;
+}
+
+.priceContainer {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--primary-blue);
+}
+
+/* --- Desktop Specifics --- */
+@media (min-width: 768px) {
+  .section {
+    padding: 5rem 5%;
+    background-color: var(--bg-white); /* Reference image shows light background changing slightly */
+  }
+
+  .carousel {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+  }
+
+  .mainCard {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  
+  .mainCardContent {
+    padding: 3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .mainImageContainer {
+    height: auto;
+  }
+
+  .carImageLarge {
+    width: 150%;
+    margin-left: -20%;
+  }
+
+  .smallCardsContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+}

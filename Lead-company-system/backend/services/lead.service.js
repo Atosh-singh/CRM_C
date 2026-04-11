@@ -4,10 +4,8 @@ const { Car } = require("../models/Car");
 const { assignLeadToUser } = require("./leadAssignmentService");
 const paginate = require("../utils/pagination");
 
-
 // ================= CREATE =================
 const createLead = async (data) => {
-
   const existingLead = await Lead.findOne({
     phone: data.phone,
     removed: false
@@ -21,7 +19,6 @@ const createLead = async (data) => {
   let assignedTeam = null;
 
   if (data.car) {
-
     const carExist = await Car.findOne({
       _id: data.car,
       removed: false,
@@ -43,9 +40,7 @@ const createLead = async (data) => {
     assignedTo: assignedUser?._id,
     team: assignedTeam?._id,
     status: "New",
-    assignmentHistory: assignedUser
-      ? [{ user: assignedUser._id }]
-      : []
+    assignmentHistory: assignedUser ? [{ user: assignedUser._id }] : []
   });
 
   if (assignedUser) {
@@ -60,20 +55,25 @@ const createLead = async (data) => {
     .populate("car", "name");
 };
 
-
-
 // ================= UPDATE =================
 const updateLead = async (id, data) => {
-
   if (!mongoose.Types.ObjectId.isValid(id)) {
     throw new Error("Invalid Lead ID");
   }
 
-  const allowedFields = ["name", "email", "phone", "status"];
+  const allowedFields = [
+    "name",
+    "email",
+    "phone",
+    "status",
+    "interest",
+    "source",
+    "locationData"
+  ];
 
   const updateData = {};
 
-  Object.keys(data).forEach(key => {
+  Object.keys(data).forEach((key) => {
     if (allowedFields.includes(key)) {
       updateData[key] = data[key];
     }
@@ -91,11 +91,8 @@ const updateLead = async (id, data) => {
   return updatedLead;
 };
 
-
-
 // ================= SOFT DELETE =================
 const softDeleteLead = async (id) => {
-
   if (!mongoose.Types.ObjectId.isValid(id)) {
     throw new Error("Invalid Lead ID");
   }
@@ -107,11 +104,8 @@ const softDeleteLead = async (id) => {
   );
 };
 
-
-
 // ================= TOGGLE ENABLE =================
 const toggleLeadStatus = async (id) => {
-
   if (!mongoose.Types.ObjectId.isValid(id)) {
     throw new Error("Invalid Lead ID");
   }
@@ -130,11 +124,15 @@ const toggleLeadStatus = async (id) => {
   return lead;
 };
 
-
-
 // ================= GET FOR VIEW =================
-const getLeadsForView = async (page = 1, limit = 10, search = "") => {
-
+// ✅ UPDATED: now supports object params + filters
+const getLeadsForView = async ({
+  page = 1,
+  limit = 10,
+  search = "",
+  status = "",
+  assignedTo = ""
+} = {}) => {
   const query = {
     removed: false
   };
@@ -148,6 +146,16 @@ const getLeadsForView = async (page = 1, limit = 10, search = "") => {
     ];
   }
 
+  // ✅ Status filter
+  if (status) {
+    query.status = status;
+  }
+
+  // ✅ Assigned user filter
+  if (assignedTo && mongoose.Types.ObjectId.isValid(assignedTo)) {
+    query.assignedTo = assignedTo;
+  }
+
   const result = await paginate(
     Lead,
     query,
@@ -157,7 +165,7 @@ const getLeadsForView = async (page = 1, limit = 10, search = "") => {
       populate: [
         { path: "car", select: "name" },
         { path: "team", select: "name" },
-        { path: "assignedTo", select: "name" }
+        { path: "assignedTo", select: "name email" }
       ],
       sort: { createdAt: -1 }
     }
@@ -166,11 +174,8 @@ const getLeadsForView = async (page = 1, limit = 10, search = "") => {
   return result;
 };
 
-
-
 // ================= UPDATE STATUS =================
 const updateLeadStatus = async (leadId, status, userId) => {
-
   if (!mongoose.Types.ObjectId.isValid(leadId)) {
     throw new Error("Invalid Lead ID");
   }

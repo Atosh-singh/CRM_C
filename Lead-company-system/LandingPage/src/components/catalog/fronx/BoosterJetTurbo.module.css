@@ -1,0 +1,136 @@
+.section {
+  padding: 5rem 1.5rem;
+  background-color: #0c0c0c;
+  color: white;
+  overflow: hidden;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 4rem;
+  align-items: center;
+}
+
+.visualColumn {
+  flex: 1;
+  width: 100%;
+}
+
+.engineCard {
+  background: linear-gradient(135deg, #1a0a0d 0%, #2c0e11 100%);
+  border: 1px solid rgba(255, 51, 51, 0.2);
+  border-radius: 20px;
+  padding: 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  position: relative;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+}
+
+.zapIcon {
+  color: #ff3333;
+  filter: drop-shadow(0 0 10px rgba(255, 51, 51, 0.5));
+}
+
+.stats {
+  display: flex;
+  gap: 2rem;
+  width: 100%;
+  justify-content: center;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.statValue {
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: white;
+}
+
+.statValue small {
+  font-size: 1rem;
+  margin-left: 0.2rem;
+  color: #ff3333;
+}
+
+.statLabel {
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.5);
+  letter-spacing: 0.1em;
+  margin-top: 0.5rem;
+}
+
+.statBorder {
+  width: 1px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.contentColumn {
+  flex: 1;
+}
+
+.label {
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  color: #ff3333;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.title {
+  font-size: 3rem;
+  font-weight: 900;
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+}
+
+.description {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  opacity: 0.8;
+  margin-bottom: 2.5rem;
+}
+
+.featureList {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.featureList li {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.featureList li svg {
+  color: #ff3333;
+}
+
+@media (min-width: 992px) {
+  .section {
+    padding: 8rem 10%;
+  }
+
+  .container {
+    flex-direction: row;
+    gap: 6rem;
+  }
+
+  .title {
+    font-size: 4rem;
+  }
+}

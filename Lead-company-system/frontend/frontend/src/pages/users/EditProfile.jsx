@@ -2,10 +2,12 @@ import { useState } from "react";
 import { Card, Input, Button, Avatar, Upload, message } from "antd";
 import { UploadOutlined, UserOutlined } from "@ant-design/icons";
 import API from "../../api/axios";
-import { useAuth } from "../../context/AuthContext";
+import { useSelector, useDispatch } from "react-redux";
+import { updateUser } from "../../redux/slices/authSlice";
 
 const EditProfile = () => {
-  const { user, setUser } = useAuth();
+  const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.auth);
 
   const [name, setName] = useState(user?.name);
   const [image, setImage] = useState(null);
@@ -22,14 +24,13 @@ const EditProfile = () => {
       formData.append("name", name);
       if (image) formData.append("image", image);
 
-    const res = await API.put("/users/me", formData, {
-  headers: { "Content-Type": "multipart/form-data" },
-});
+      const res = await API.put("/users/me", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
 
-      setUser(res.data.data);
-      localStorage.setItem("user", JSON.stringify(res.data.data));
-      console.log("USER:", user);
-      console.log("UPDATED USER:", res.data);
+      // ✅ Redux update
+      dispatch(updateUser(res.data.data));
+
       message.success("Profile updated successfully");
     } catch (err) {
       message.error("Update failed");
@@ -39,7 +40,6 @@ const EditProfile = () => {
   return (
     <div className="p-6 flex justify-center">
       <Card title="Edit Profile" style={{ width: 500, borderRadius: 16 }}>
-        
         <div style={{ textAlign: "center", marginBottom: 20 }}>
           <Avatar size={100} src={preview} icon={<UserOutlined />} />
         </div>

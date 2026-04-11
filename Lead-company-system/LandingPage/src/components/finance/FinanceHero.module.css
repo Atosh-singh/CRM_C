@@ -1,0 +1,67 @@
+.hero {
+  padding: 4rem 1.5rem 3rem 1.5rem;
+  background-color: white;
+}
+
+.content {
+  max-width: 800px;
+}
+
+.title {
+  font-size: 3rem;
+  font-weight: 800;
+  color: var(--text-dark);
+  margin: 0;
+  line-height: 1.1;
+}
+
+.titleBlue {
+  font-size: 3rem;
+  font-weight: 800;
+  color: var(--primary-blue);
+  margin: 0;
+  line-height: 1.1;
+  margin-bottom: 1.5rem;
+}
+
+.subtitle {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: var(--text-dark);
+  opacity: 0.8;
+  margin-bottom: 2.5rem;
+}
+
+.benefits {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.benefitItem {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+.icon {
+  color: var(--primary-blue);
+}
+
+@media (min-width: 768px) {
+  .hero {
+    padding: 6rem 10% 4rem 10%;
+  }
+
+  .title, .titleBlue {
+    font-size: 4.5rem;
+  }
+
+  .benefits {
+    flex-direction: row;
+    gap: 3rem;
+  }
+}

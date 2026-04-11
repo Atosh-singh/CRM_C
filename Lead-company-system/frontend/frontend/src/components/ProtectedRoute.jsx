@@ -1,21 +1,14 @@
+import { useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
 
-function ProtectedRoute({ children }) {
+const ProtectedRoute = ({ children }) => {
+  const { token, user } = useSelector((state) => state.auth);
 
-  const { user, loading } = useAuth();
-
-  // wait for auth context to load
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  // if user not logged in
-  if (!user) {
+  if (!token || !user) {
     return <Navigate to="/login" replace />;
   }
 
   return children;
-}
+};
 
 export default ProtectedRoute;

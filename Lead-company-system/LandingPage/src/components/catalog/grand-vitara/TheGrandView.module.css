@@ -1,0 +1,85 @@
+.section {
+  padding: 5rem 1.5rem;
+  background-color: white;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+  align-items: center;
+}
+
+.visualColumn {
+  flex: 1.2;
+  width: 100%;
+}
+
+.sunroofVisual {
+  width: 100%;
+  aspect-ratio: 16/9;
+  background-color: #f1f3f5;
+  border-radius: 16px;
+  background-image: 
+    radial-gradient(circle at 50% 50%, rgba(13, 71, 161, 0.05) 0%, transparent 70%);
+}
+
+.contentColumn {
+  flex: 1;
+}
+
+.label {
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  color: #0d47a1;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 900;
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+}
+
+.description {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  opacity: 0.8;
+  margin-bottom: 2.5rem;
+}
+
+.featureGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+
+.featureTitle {
+  font-size: 1.2rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+}
+
+.featureText {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  opacity: 0.7;
+}
+
+@media (min-width: 992px) {
+  .section {
+    padding: 8rem 10%;
+  }
+
+  .container {
+    flex-direction: row;
+    gap: 5rem;
+  }
+
+  .featureGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+}

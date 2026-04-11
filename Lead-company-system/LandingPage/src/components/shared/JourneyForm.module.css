@@ -1,0 +1,158 @@
+.container {
+  padding: 0 1.5rem 3rem 1.5rem;
+}
+
+.card {
+  background-color: var(--bg-white);
+  border-radius: 12px;
+  padding: 2.5rem 1.5rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+}
+
+.title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--primary-blue);
+  margin-bottom: 0.8rem;
+  text-align: center;
+}
+
+.subtitle {
+  font-size: 0.85rem;
+  color: var(--text-dark);
+  line-height: 1.5;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.input {
+  width: 100%;
+  background-color: #efefef;
+  border: none;
+  padding: 1rem 1rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-dark);
+  outline: none;
+  font-family: inherit;
+}
+
+.sectionLabel {
+  font-size: 0.45rem;
+  font-weight: 700;
+  color: var(--text-light);
+  letter-spacing: 0.1em;
+  display: block;
+  margin-bottom: 0.8rem;
+}
+
+.toggleRow {
+  display: flex;
+  gap: 0.8rem;
+}
+
+.toggleItem {
+  flex: 1;
+  background-color: #f6f6f8;
+  border: 1px solid transparent;
+  padding: 1.2rem;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  color: var(--text-light);
+  transition: all 0.2s;
+}
+
+.activeToggle {
+  background-color: #e8ebf7;
+  border-color: var(--primary-blue);
+  color: var(--primary-blue);
+}
+
+.toggleItem span {
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.selectWrapper {
+  position: relative;
+}
+
+.select {
+  width: 100%;
+  appearance: none;
+  background-color: #efefef;
+  border: none;
+  padding: 1rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  outline: none;
+  cursor: pointer;
+}
+
+.selectIcon {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: var(--text-light);
+}
+
+.submitBtn {
+  background-color: var(--primary-blue);
+  color: white;
+  padding: 1.2rem;
+  border-radius: 8px;
+  border: none;
+  font-weight: 700;
+  font-size: 0.85rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.8rem;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(11, 31, 82, 0.2);
+  margin-top: 1rem;
+  transition: background-color 0.2s;
+}
+
+.submitBtn:hover {
+  background-color: var(--secondary-blue);
+}
+
+.privacyNote {
+  font-size: 0.5rem;
+  font-weight: 700;
+  text-align: center;
+  color: var(--text-light);
+  letter-spacing: 0.05em;
+  margin-top: 2rem;
+}
+
+.privacyNote a {
+  color: var(--primary-blue);
+  text-decoration: underline;
+}
+
+@media (min-width: 768px) {
+  .container {
+    padding: 0 15% 4rem 15%;
+  }
+
+  .title {
+    font-size: 2.5rem;
+  }
+}

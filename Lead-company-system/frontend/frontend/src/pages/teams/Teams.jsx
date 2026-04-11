@@ -1,39 +1,36 @@
 import { useEffect, useState } from "react";
-import { Table, Modal, Descriptions, message } from "antd";
-import { useNavigate } from "react-router-dom";
-import API from "../../api/axios";
+import { Modal, Descriptions, message } from "antd";
+import { useDispatch, useSelector } from "react-redux";
+
+import {
+  fetchTeams,
+  createTeam,
+  updateTeam,
+  deleteTeam
+} from "../../redux/slices/teamSlice";
+
 import PageToolbar from "../../components/PageToolbar";
+import TeamForm from "../../components/teams/TeamForm";
+import TeamTable from "../../components/teams/TeamTable";
 
 function Teams() {
-  const [teams, setTeams] = useState([]);
+  const dispatch = useDispatch();
+  const { teams, loading } = useSelector((state) => state.teams);
+
   const [filteredTeams, setFilteredTeams] = useState([]);
   const [selectedTeam, setSelectedTeam] = useState(null);
-  const [open, setOpen] = useState(false);
-
-  const navigate = useNavigate();
+  const [detailsOpen, setDetailsOpen] = useState(false);
+  const [formOpen, setFormOpen] = useState(false);
+  const [editingTeam, setEditingTeam] = useState(null);
 
   useEffect(() => {
-    fetchTeams();
-  }, []);
+    dispatch(fetchTeams());
+  }, [dispatch]);
 
- const fetchTeams = async () => {
-  try {
-    const res = await API.get("/teams");
+  useEffect(() => {
+    setFilteredTeams(teams);
+  }, [teams]);
 
-    console.log("Teams API Response:", res.data); // ✅ DEBUG
-
-    // ✅ FIX: extract array properly
-    const teamData = res.data.data || res.data.teams || res.data || [];
-
-    setTeams(Array.isArray(teamData) ? teamData : []);
-    setFilteredTeams(Array.isArray(teamData) ? teamData : []);
-
-  } catch (error) {
-    message.error("Failed to load teams");
-  }
-};
-
-  // 🔍 SEARCH
   const handleSearch = (value) => {
     const filtered = teams.filter((team) =>
       team.name?.toLowerCase().includes(value.toLowerCase())
@@ -41,30 +38,56 @@ function Teams() {
     setFilteredTeams(filtered);
   };
 
-  const columns = [
-    {
-      title: "Team Name",
-      dataIndex: "name"
-    },
-    {
-      title: "Team Lead",
-      render: (record) => record.lead?.name || "-"
-    },
-    {
-      title: "Members",
-      render: (record) => record.members?.length || 0
+  const handleDelete = async (id) => {
+    try {
+      await dispatch(deleteTeam(id)).unwrap();
+      message.success("Team deleted");
+    } catch (err) {
+      message.error(err || "Delete failed");
     }
-  ];
+  };
+
+  const handleSubmit = async (values) => {
+    try {
+      if (editingTeam) {
+        await dispatch(
+          updateTeam({ id: editingTeam._id, teamData: values })
+        ).unwrap();
+        message.success("Team updated");
+      } else {
+        await dispatch(createTeam(values)).unwrap();
+        message.success("Team created");
+      }
+
+      setFormOpen(false);
+      setEditingTeam(null);
+    } catch (err) {
+      message.error(err || "Action failed");
+    }
+  };
 
   const handleRowClick = (record) => {
     setSelectedTeam(record);
-    setOpen(true);
+    setDetailsOpen(true);
+  };
+
+  const handleOpenCreateModal = () => {
+    setEditingTeam(null);
+    setFormOpen(true);
+  };
+
+  const handleOpenEditModal = (team) => {
+    setEditingTeam(team);
+    setFormOpen(true);
+  };
+
+  const handleCloseFormModal = () => {
+    setFormOpen(false);
+    setEditingTeam(null);
   };
 
   return (
     <div>
-
-      {/* 🔥 TOOLBAR */}
       <PageToolbar
         title="Teams"
         showSearch={true}
@@ -73,51 +96,58 @@ function Teams() {
           {
             label: "Add Team",
             type: "primary",
-            onClick: () => navigate("/teams/create") // ✅ correct navigation
+            onClick: handleOpenCreateModal
           }
         ]}
       />
 
-      {/* 📊 TABLE */}
-      <Table
-        dataSource={filteredTeams}
-        columns={columns}
-        rowKey="_id"
-        onRow={(record) => ({
-          onClick: () => handleRowClick(record)
-        })}
+      <TeamTable
+        data={filteredTeams}
+        loading={loading}
+        onRowClick={handleRowClick}
+        onEdit={handleOpenEditModal}
+        onDelete={handleDelete}
       />
 
-      {/* 📦 MODAL */}
       <Modal
         title="Team Details"
-        open={open}
-        onCancel={() => setOpen(false)}
+        open={detailsOpen}
+        onCancel={() => setDetailsOpen(false)}
         footer={null}
       >
         {selectedTeam && (
           <Descriptions column={1} bordered>
-
             <Descriptions.Item label="Team Name">
               {selectedTeam.name}
             </Descriptions.Item>
 
             <Descriptions.Item label="Team Lead">
-              {selectedTeam.lead?.name}
+              {selectedTeam.lead?.name || "-"}
             </Descriptions.Item>
 
             <Descriptions.Item label="Total Members">
-              {selectedTeam.members?.length}
+              {selectedTeam.members?.length || 0}
             </Descriptions.Item>
 
             <Descriptions.Item label="Team ID">
               {selectedTeam._id}
             </Descriptions.Item>
-
           </Descriptions>
         )}
       </Modal>
 
+      <Modal
+        title={editingTeam ? "Edit Team" : "Create Team"}
+        open={formOpen}
+        onCancel={handleCloseFormModal}
+        footer={null}
+        destroyOnClose
+      >
+        <TeamForm
+          initialValues={editingTeam}
+          onSubmit={handleSubmit}
+        />
+      </Modal>
     </div>
   );
 }

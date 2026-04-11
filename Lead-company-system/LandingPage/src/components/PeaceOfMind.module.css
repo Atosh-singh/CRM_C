@@ -1,0 +1,104 @@
+.section {
+  padding: 3rem 1.5rem;
+  background-color: var(--primary-blue);
+  color: white;
+  padding-bottom: 5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Background shield graphic placeholder */
+.section::before {
+  content: '';
+  position: absolute;
+  right: -5%;
+  bottom: -10%;
+  width: 50%;
+  height: 100%;
+  background-image: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.container {
+  position: relative;
+  z-index: 1;
+}
+
+.header {
+  margin-bottom: 2.5rem;
+}
+
+.title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 0.8rem;
+}
+
+.subtitle {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.8);
+  max-width: 90%;
+}
+
+.featureGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.featureItem {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.iconWrapper {
+  background-color: rgba(255,255,255,0.1);
+  padding: 0.8rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.featureTitle {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 0.2rem;
+}
+
+.featureDesc {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.5;
+}
+
+/* --- Desktop Specifics --- */
+@media (min-width: 768px) {
+  .section {
+    padding: 5rem 5%;
+    padding-bottom: 6rem;
+  }
+
+  .header {
+    max-width: 50%;
+    margin-bottom: 4rem;
+  }
+
+  .title {
+    font-size: 2.5rem;
+  }
+
+  .featureGrid {
+    flex-direction: row;
+    gap: 3rem;
+  }
+
+  .featureItem {
+    flex: 1;
+    gap: 1.2rem;
+  }
+}

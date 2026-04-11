@@ -1,34 +1,32 @@
 import { Layout, Menu, Drawer, Button } from "antd";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useState } from "react";
+import { useSelector } from "react-redux";
 
-import { useAuth } from "../context/AuthContext";
 import { menuConfig } from "../utils/menuConfig";
 import { canAccess } from "../utils/authUtils";
 
 const { Sider } = Layout;
 
 function Sidebar() {
-
   const navigate = useNavigate();
   const location = useLocation();
-  const { user } = useAuth();
+  const { user } = useSelector((state) => state.auth);
 
   const [authDrawer, setAuthDrawer] = useState(false);
 
-  const generateMenu = (config) => {
+  const roleName = user?.role?.name || user?.role;
 
+  const generateMenu = (config) => {
     return config
       .map((item) => {
-
         if (item.type === "divider") return item;
 
-        if (item.roles && !item.roles.includes(user?.role)) return null;
+        if (item.roles && !item.roles.includes(roleName)) return null;
 
         if (item.permission && !canAccess(user, item.permission)) return null;
 
         if (item.children) {
-
           const children = item.children
             .filter((child) => canAccess(user, child.permission))
             .map((child) => ({
@@ -51,23 +49,19 @@ function Sidebar() {
           icon: item.icon,
           label: item.label
         };
-
       })
       .filter(Boolean);
-
   };
 
   const items = generateMenu(menuConfig);
 
   const handleMenuClick = (e) => {
-
     if (e.key === "authorization") {
       setAuthDrawer(true);
       return;
     }
 
     navigate(e.key);
-
   };
 
   return (
@@ -78,10 +72,9 @@ function Sidebar() {
         style={{
           background: "#f3f4f6",
           borderRight: "1px solid #e5e7eb",
-          minHeight: "100vh",
+          minHeight: "100vh"
         }}
       >
-
         <div
           style={{
             height: 60,
@@ -90,7 +83,7 @@ function Sidebar() {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            borderBottom: "1px solid #e5e7eb",
+            borderBottom: "1px solid #e5e7eb"
           }}
         >
           CRM Panel
@@ -106,7 +99,6 @@ function Sidebar() {
             background: "#f3f4f6"
           }}
         />
-
       </Sider>
 
       <Drawer
@@ -116,12 +108,8 @@ function Sidebar() {
         open={authDrawer}
         onClose={() => setAuthDrawer(false)}
       >
-
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-
-          <Button onClick={() => navigate("/users")}>
-            Manage Users
-          </Button>
+          <Button onClick={() => navigate("/users")}>Manage Users</Button>
 
           <Button onClick={() => navigate("/users/create")}>
             Create User
@@ -138,9 +126,7 @@ function Sidebar() {
           <Button onClick={() => navigate("/teams/create")}>
             Create Team
           </Button>
-
         </div>
-
       </Drawer>
     </>
   );

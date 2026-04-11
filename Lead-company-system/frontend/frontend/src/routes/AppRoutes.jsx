@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import CRMLayout from "../layouts/CRMLayout";
 import ProtectedRoute from "../components/ProtectedRoute";
@@ -11,27 +11,22 @@ import CreateUser from "../pages/users/CreateUser";
 import Cars from "../pages/cars/Cars";
 
 import Users from "../pages/users/Users";
-import Teams from "../pages/teams/Teams"
-
-import CreateRole from "../pages/roles/CreateRole";
-import CreatePermission from "../pages/permissions/CreatePermission";
+import Teams from "../pages/teams/Teams";
+import Roles from "../pages/roles/Roles";
+import Permissions from "../pages/permissions/Permissions";
 
 import Profile from "../pages/users/Profile";
 import EditProfile from "../pages/users/EditProfile";
-
 
 function AppRoutes() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Public Routes */}
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
 
-
-        
-
-        {/* Protected Routes */}
         <Route
           path="/dashboard"
           element={
@@ -77,22 +72,33 @@ function AppRoutes() {
         />
 
         <Route
-          path="/roles/create"
+          path="/teams"
           element={
             <ProtectedRoute>
               <CRMLayout>
-                <CreateRole />
+                <Teams />
               </CRMLayout>
             </ProtectedRoute>
           }
         />
 
         <Route
-          path="/permissions/create"
+          path="/roles"
           element={
             <ProtectedRoute>
               <CRMLayout>
-                <CreatePermission />
+                <Roles />
+              </CRMLayout>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/permissions"
+          element={
+            <ProtectedRoute>
+              <CRMLayout>
+                <Permissions />
               </CRMLayout>
             </ProtectedRoute>
           }
@@ -109,43 +115,29 @@ function AppRoutes() {
           }
         />
 
-        {/* Team Routes */}
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <CRMLayout>
+                <Profile />
+              </CRMLayout>
+            </ProtectedRoute>
+          }
+        />
 
-<Route
-  path="/teams"
-  element={
-    <ProtectedRoute>
-      <CRMLayout>
-        <Teams />
-      </CRMLayout>
-    </ProtectedRoute>
-  }
-/>
+        <Route
+          path="/edit-profile"
+          element={
+            <ProtectedRoute>
+              <CRMLayout>
+                <EditProfile />
+              </CRMLayout>
+            </ProtectedRoute>
+          }
+        />
 
-
-     {/* Profile Routes */}
-<Route
-  path="/profile"
-  element={
-    <ProtectedRoute>
-      <CRMLayout>
-        <Profile />
-      </CRMLayout>
-    </ProtectedRoute>
-  }
-/>
-
-<Route
-  path="/edit-profile"
-  element={
-    <ProtectedRoute>
-      <CRMLayout>
-        <EditProfile />
-      </CRMLayout>
-    </ProtectedRoute>
-  }
-/>
-
+        <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
     </BrowserRouter>
   );

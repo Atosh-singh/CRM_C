@@ -26,9 +26,9 @@ const updateRole = async (req, res) => {
       });
     }
 
-    const validPermissions = await Permission.find({
-      name: { $in: permissions }
-    });
+   const validPermissions = await Permission.find({
+  _id: { $in: permissions }
+});
 
     if (validPermissions.length !== permissions.length) {
       return res.status(400).json({

@@ -1,17 +1,15 @@
 import { Navigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import { useSelector } from "react-redux";
 import { canAccess } from "../utils/authUtils";
 
 function PermissionGuard({ permission, children }) {
+  const { user, token } = useSelector((state) => state.auth);
 
-  const { user } = useAuth();
-
-  if (!user) {
+  if (!token || !user) {
     return <Navigate to="/login" replace />;
   }
 
-  // Use centralized permission logic
-  if (!canAccess(user, permission)) {
+  if (permission && !canAccess(user, permission)) {
     return <Navigate to="/dashboard" replace />;
   }
 

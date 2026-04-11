@@ -1,0 +1,110 @@
+.hero {
+  height: clamp(500px, 80vh, 700px);
+  background-image: url('/hero_car_bg.png'); /* Placeholder for mountain bg */
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 2rem 1.5rem;
+  position: relative;
+}
+
+/* Simulate the faded bottom matching the image */
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 50%;
+  background: linear-gradient(to top, rgba(246, 246, 248, 1), transparent);
+  pointer-events: none;
+}
+
+.content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: white;
+  text-transform: uppercase;
+}
+
+.title {
+  font-size: clamp(3rem, 10vw, 5rem);
+  font-weight: 800;
+  color: white;
+  margin: 0;
+  text-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  width: 100%;
+  max-width: 300px;
+}
+
+.primaryBtn {
+  background-color: var(--primary-blue);
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 1rem;
+  border-radius: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.8rem;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(11, 31, 82, 0.3);
+  transition: background-color 0.2s;
+}
+
+.primaryBtn:hover {
+  background-color: var(--secondary-blue);
+}
+
+.steeringIcon {
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.secondaryBtn {
+  background-color: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(4px);
+  color: var(--text-dark);
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 1rem;
+  border-radius: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.8rem;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.secondaryBtn:hover {
+  background-color: white;
+}
+
+@media (min-width: 768px) {
+  .hero {
+    padding: 4rem 5%;
+    align-items: flex-start;
+    justify-content: center;
+  }
+}

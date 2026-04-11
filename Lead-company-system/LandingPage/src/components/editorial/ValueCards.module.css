@@ -1,0 +1,38 @@
+.section {
+  display: flex;
+  gap: 1rem;
+  padding: 0 1.5rem 2rem 1.5rem;
+}
+
+.card {
+  flex: 1;
+  background-color: var(--bg-light); /* #f6f6f8 */
+  padding: 1.5rem;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.icon {
+  color: var(--primary-blue);
+}
+
+.title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+.text {
+  font-size: 0.75rem;
+  color: var(--text-light);
+  line-height: 1.4;
+}
+
+@media (min-width: 768px) {
+  .section {
+    padding: 0 15% 3rem 15%;
+    gap: 2rem;
+  }
+}

@@ -1,0 +1,90 @@
+.section {
+  padding: 5rem 1.5rem;
+  background-color: white;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+  align-items: center;
+}
+
+.visualColumn {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.mainShield {
+  color: var(--primary-blue);
+  opacity: 0.1;
+  filter: drop-shadow(0 0 20px rgba(11, 31, 82, 0.05));
+}
+
+.contentColumn {
+  flex: 1.5;
+}
+
+.label {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--primary-blue);
+  letter-spacing: 0.15em;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--text-dark);
+  margin-bottom: 1.5rem;
+}
+
+.description {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: var(--text-dark);
+  opacity: 0.8;
+  margin-bottom: 2.5rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.2rem;
+}
+
+.featureItem {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.checkIcon {
+  color: var(--primary-blue);
+}
+
+@media (min-width: 992px) {
+  .section {
+    padding: 8rem 10%;
+  }
+
+  .container {
+    flex-direction: row;
+    gap: 5rem;
+  }
+
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .mainShield {
+    opacity: 0.05;
+  }
+}

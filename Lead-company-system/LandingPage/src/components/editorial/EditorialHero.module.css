@@ -1,0 +1,53 @@
+.hero {
+  position: relative;
+  height: 400px;
+  background-image: url('/hero_car_bg.png'); /* Using previous car background */
+  background-size: cover;
+  background-position: center;
+  border-radius: 12px;
+  margin: 1.5rem;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  padding: 2rem;
+}
+
+.overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(to top, rgba(11, 31, 82, 0.8), transparent);
+  z-index: 1;
+}
+
+.content {
+  position: relative;
+  z-index: 2;
+  color: white;
+}
+
+.badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  opacity: 0.8;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  line-height: 1.1;
+  margin: 0;
+}
+
+@media (min-width: 768px) {
+  .hero {
+    height: 500px;
+    margin: 3rem 15%;
+  }
+
+  .title {
+    font-size: 3.5rem;
+  }
+}

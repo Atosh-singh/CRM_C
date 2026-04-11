@@ -1,0 +1,7 @@
+.main {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg-white);
+  padding-bottom: env(safe-area-inset-bottom);
+}

@@ -2,12 +2,14 @@ const express = require("express");
 const router = express.Router();
 
 const {
+  createLead,
   getLead,
   removeLead,
   toggleLeadStatus,
   updateLead,
   updateLeadStatus,
-  assignLead
+  assignLead,
+  reassignLead
 } = require("../controllers/lead");
 
 const authMiddleware = require("../middlewares/auth.middleware");
@@ -16,41 +18,39 @@ const cache = require("../middlewares/cache.middleware");
 
 router.use(authMiddleware);
 
+router.post("/", permissionMiddleware("CREATE_LEAD"), createLead);
+
 router.get(
   "/",
   permissionMiddleware("VIEW_LEAD"),
   cache(60, "leads"), // ✅ important
-  getLead
+  getLead,
 );
 
 router.put(
   "/:id/status",
   permissionMiddleware("UPDATE_LEAD_STATUS"),
-  updateLeadStatus
+  updateLeadStatus,
 );
 
-router.put(
-  "/:id",
-  permissionMiddleware("UPDATE_LEAD"),
-  updateLead
-);
+router.put("/:id", permissionMiddleware("UPDATE_LEAD"), updateLead);
 
-router.delete(
-  "/:id",
-  permissionMiddleware("DELETE_LEAD"),
-  removeLead
-);
+router.delete("/:id", permissionMiddleware("DELETE_LEAD"), removeLead);
 
 router.patch(
   "/toggle/:id",
   permissionMiddleware("TOGGLE_LEAD"),
-  toggleLeadStatus
+  toggleLeadStatus,
 );
 
 router.put(
-  "/:id/assign",
-  permissionMiddleware("ASSIGN_LEAD"),
-  assignLead
+  "/:id/reassign",
+  permissionMiddleware("REASSIGN_LEAD"),
+  reassignLead
 );
+
+
+
+router.put("/:id/assign", permissionMiddleware("ASSIGN_LEAD"), assignLead);
 
 module.exports = router;

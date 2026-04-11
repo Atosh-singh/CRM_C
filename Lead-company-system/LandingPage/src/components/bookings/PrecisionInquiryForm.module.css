@@ -1,0 +1,294 @@
+.container {
+  padding: 2rem 1.5rem;
+  background-color: var(--bg-white);
+}
+
+.header {
+  margin-bottom: 2.5rem;
+}
+
+.pageTitle {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--primary-blue);
+  margin-bottom: 1rem;
+}
+
+.pageSubtitle {
+  font-size: 0.9rem;
+  color: var(--text-dark);
+  line-height: 1.6;
+}
+
+.stepper {
+  display: flex;
+  margin-bottom: 3rem;
+  border-bottom: 2px solid var(--border-color);
+}
+
+.step {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 0.8rem;
+  position: relative;
+  opacity: 0.5;
+  transition: opacity 0.3s;
+}
+
+.activeStep {
+  opacity: 1;
+}
+
+.activeStep::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: var(--primary-blue);
+}
+
+.stepLabel {
+  font-size: 0.55rem;
+  font-weight: 700;
+  color: var(--text-light);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.stepName {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.section {
+  margin-bottom: 3rem;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  color: var(--primary-blue);
+}
+
+.sectionTitle {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.vehicleGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.vehicleCard {
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.2s;
+  background-color: var(--bg-white);
+}
+
+.activeVehicle {
+  border: 2px solid var(--primary-blue);
+  box-shadow: 0 4px 12px rgba(11, 31, 82, 0.1);
+}
+
+.vehicleImageContainer {
+  height: 140px;
+  background-color: #f6f6f8;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.vehicleImage {
+  width: 100%;
+  object-fit: contain;
+}
+
+.vehicleInfo {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.vehicleType {
+  font-size: 0.5rem;
+  font-weight: 700;
+  color: var(--primary-blue);
+  letter-spacing: 0.1em;
+  margin-bottom: 0.2rem;
+}
+
+.vehicleName {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.inputGroup {
+  margin-bottom: 1.2rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.inputLabel {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.05em;
+}
+
+.inputField {
+  background-color: #efefef;
+  border: none;
+  padding: 1.2rem 1rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  color: var(--text-dark);
+  outline: none;
+  font-family: inherit;
+}
+
+.inputField:focus {
+  background-color: #e5e5e5;
+}
+
+.mapContainer {
+  position: relative;
+  height: 200px;
+  background-color: #c5e1a5; /* green tint for fake map */
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  overflow: hidden;
+}
+
+.mapPlaceholder {
+  width: 100%;
+  height: 100%;
+  background-image: radial-gradient(circle, #e0f2f1 2px, transparent 2px);
+  background-size: 20px 20px;
+  opacity: 0.5;
+}
+
+.searchOverlay {
+  position: absolute;
+  bottom: 1rem;
+  left: 1rem;
+  right: 1rem;
+  background-color: white;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  padding: 0.8rem;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.searchIcon {
+  color: var(--text-light);
+  margin-right: 0.5rem;
+}
+
+.searchInput {
+  border: none;
+  outline: none;
+  width: 100%;
+  font-size: 0.85rem;
+  font-family: inherit;
+}
+
+.dealerCard {
+  display: flex;
+  align-items: center;
+  background-color: #f8f9fa;
+  border: 1px solid var(--border-color);
+  padding: 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.dealerIcon {
+  color: var(--primary-blue);
+  margin-right: 1rem;
+}
+
+.dealerInfo {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.dealerName {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.dealerAddr {
+  font-size: 0.7rem;
+  color: var(--text-light);
+}
+
+.radioSelected {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid var(--primary-blue);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.radioInner {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--primary-blue);
+}
+
+.submitBtn {
+  width: 100%;
+  background-color: var(--primary-blue);
+  color: white;
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 1.2rem;
+  border: none;
+  border-radius: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.8rem;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(11, 31, 82, 0.2);
+  transition: background-color 0.2s;
+  letter-spacing: 0.05em;
+}
+
+.submitBtn:hover {
+  background-color: var(--secondary-blue);
+}
+
+@media (min-width: 768px) {
+  .container {
+    padding: 3rem 15%;
+  }
+
+  .vehicleGrid {
+    flex-direction: row;
+  }
+
+  .vehicleCard {
+    flex: 1;
+  }
+}

@@ -1,30 +1,29 @@
-import {  Avatar, Badge, Dropdown, Space, Typography } from "antd";
+import { Avatar, Badge, Dropdown, Space, Typography } from "antd";
 import {
   BellOutlined,
   UserOutlined,
   LogoutOutlined,
- 
   SettingOutlined,
   ProfileOutlined
 } from "@ant-design/icons";
-
-import { useAuth } from "../context/AuthContext";
+import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
-import logo from "../assets/LOGO.png"
+import { logout } from "../redux/slices/authSlice";
+import logo from "../assets/LOGO.png";
 
 const { Text } = Typography;
 
 function Navbar() {
-  const { user, logout } = useAuth();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { user } = useSelector((state) => state.auth);
 
   const handleLogout = () => {
-    logout();
+    dispatch(logout());
     navigate("/login");
   };
 
-  // ✅ Dropdown Menu (Enhanced)
   const items = [
     {
       key: "user-info",
@@ -38,12 +37,11 @@ function Navbar() {
       )
     },
     { type: "divider" },
-
     {
       key: "profile",
       icon: <ProfileOutlined />,
       label: "View Profile",
-      onClick: () => navigate("/profile")  
+      onClick: () => navigate("/profile")
     },
     {
       key: "edit",
@@ -51,9 +49,7 @@ function Navbar() {
       label: "Edit Profile",
       onClick: () => navigate("/edit-profile")
     },
-
     { type: "divider" },
-
     {
       key: "logout",
       icon: <LogoutOutlined />,
@@ -64,55 +60,50 @@ function Navbar() {
   ];
 
   return (
-   <div
-    style={{
-      height: 64,
-      background: "#fff",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "space-between",
-      padding: "0 24px",
-      boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
-      position: "sticky",
-      top: 0,
-      zIndex: 100
-    }}
-  >
-    {/* ✅ LEFT SIDE - LOGO ONLY */}
-    <div style={{ display: "flex", alignItems: "center" }}>
-      <img
-        src={logo}
-        alt="Company Logo"
-        style={{
-          height: 40,
-          cursor: "pointer"
-        }}
-        onClick={() => navigate("/dashboard")} // ✅ redirect to dashboard
-      />
-    </div>
+    <div
+      style={{
+        height: 64,
+        background: "#fff",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        padding: "0 24px",
+        boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
+        position: "sticky",
+        top: 0,
+        zIndex: 100
+      }}
+    >
+      <div style={{ display: "flex", alignItems: "center" }}>
+        <img
+          src={logo}
+          alt="Company Logo"
+          style={{
+            height: 40,
+            cursor: "pointer"
+          }}
+          onClick={() => navigate("/dashboard")}
+        />
+      </div>
 
-      {/* 🔔 Right Side */}
       <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
-        
-        {/* Notifications */}
         <Badge count={3} size="small">
           <BellOutlined style={{ fontSize: 20, cursor: "pointer" }} />
         </Badge>
 
-        {/* 👤 Profile */}
         <Dropdown menu={{ items }} trigger={["click"]} placement="bottomRight">
           <Space
             style={{
               cursor: "pointer",
               padding: "6px 10px",
               borderRadius: 8,
-              transition: "0.2s",
+              transition: "0.2s"
             }}
             className="hover-bg"
           >
             <Avatar
               size={40}
-              src={user?.image} // ✅ Cloudinary image
+              src={user?.image}
               icon={<UserOutlined />}
             />
 
@@ -124,7 +115,6 @@ function Navbar() {
             </div>
           </Space>
         </Dropdown>
-
       </div>
     </div>
   );

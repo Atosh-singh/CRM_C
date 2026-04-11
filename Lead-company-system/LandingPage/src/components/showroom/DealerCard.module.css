@@ -1,0 +1,144 @@
+.card {
+  background-color: var(--bg-white);
+  border-radius: 12px;
+  padding: 1.5rem;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.infoLeft {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.infoRight {
+  text-align: right;
+}
+
+.typeBadge {
+  font-size: 0.6rem;
+  font-weight: 700;
+  padding: 0.2rem 0.5rem;
+  border-radius: 2px;
+  color: white;
+  display: inline-block;
+  width: fit-content;
+}
+
+.nexa { background-color: #0b1f52; }
+.arena { background-color: #0d47a1; }
+.commercial { background-color: #455a64; }
+
+.dealerName {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+.addressRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.addressIcon {
+  color: var(--text-light);
+  margin-top: 0.2rem;
+}
+
+.address {
+  font-size: 0.8rem;
+  color: var(--text-light);
+  line-height: 1.4;
+}
+
+.distanceValue {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  display: block;
+}
+
+.distanceLabel {
+  font-size: 0.55rem;
+  font-weight: 700;
+  color: var(--text-light);
+  letter-spacing: 0.05em;
+}
+
+.details {
+  display: flex;
+  gap: 1rem;
+}
+
+.detailItem {
+  flex: 1;
+  background-color: #f6f6f8;
+  padding: 0.8rem;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.detailLabel {
+  font-size: 0.55rem;
+  font-weight: 700;
+  color: var(--text-light);
+}
+
+.statusValue {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #2e7d32; /* Green from mockup */
+}
+
+.hoursValue {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+.actions {
+  display: flex;
+  gap: 0.8rem;
+}
+
+.callBtn, .directionsBtn {
+  flex: 1;
+  padding: 1rem;
+  border-radius: 8px;
+  border: none;
+  font-size: 0.8rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.callBtn {
+  background-color: var(--primary-blue);
+  color: white;
+}
+
+.directionsBtn {
+  background-color: #e0e0e0;
+  color: var(--text-dark);
+}
+
+.callBtn:hover, .directionsBtn:hover {
+  opacity: 0.9;
+}
