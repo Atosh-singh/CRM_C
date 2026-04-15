@@ -3,7 +3,6 @@ import {
   UserOutlined,
   TeamOutlined,
   CarOutlined,
-  UserAddOutlined,
   SafetyOutlined,
   KeyOutlined,
   SettingOutlined
@@ -11,6 +10,7 @@ import {
 
 export const menuConfig = [
 
+  // ✅ MAIN NAVIGATION
   {
     key: "/dashboard",
     icon: <DashboardOutlined />,
@@ -32,66 +32,55 @@ export const menuConfig = [
     permission: "VIEW_CAR"
   },
 
-     {
-        key: "/teams",
-        icon: <TeamOutlined />,
-        label: "Teams",
-        permission: "VIEW_TEAMS"
-      },
+  {
+    key: "/teams",
+    icon: <TeamOutlined />,
+    label: "Teams",
+    permission: "VIEW_TEAMS"
+  },
 
   {
     type: "divider"
   },
 
+  // ✅ ADMIN SECTION (CLEAN)
   {
     key: "admin",
     label: "Admin",
     roles: ["ADMIN", "SUPER_ADMIN"],
 
     children: [
-
       {
         key: "/users",
         icon: <TeamOutlined />,
         label: "Users",
         permission: "VIEW_USERS"
       },
-     
 
       {
-        key: "/users/create",
-        icon: <UserAddOutlined />,
-        label: "Create User",
-        permission: "CREATE_USER"
-      },
-
-      {
-        key: "/roles/create",
+        key: "/roles",
         icon: <SafetyOutlined />,
-        label: "Create Role",
+        label: "Roles",
         permission: "VIEW_ROLE"
       },
 
       {
-        key: "/permissions/create",
+        key: "/permissions",
         icon: <KeyOutlined />,
-        label: "Create Permission",
+        label: "Permissions",
         permission: "VIEW_PERMISSION"
       },
-
       {
-        key: "/admin/permissions",
-        icon: <SettingOutlined />,
-        label: "Permission Matrix"
-      },
+  key: "/admin/permissions",
+  icon: <SettingOutlined />,
+  label: "Permission Matrix"
+},
 
       {
         key: "authorization",
         icon: <SettingOutlined />,
         label: "Authorization Panel"
       }
-
     ]
   }
-
 ];

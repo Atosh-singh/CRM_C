@@ -1,10 +1,11 @@
 import { Avatar, Badge, Dropdown, Space, Typography } from "antd";
+import { disconnectSocket } from "../socket";
 import {
   BellOutlined,
   UserOutlined,
   LogoutOutlined,
   SettingOutlined,
-  ProfileOutlined
+  ProfileOutlined,
 } from "@ant-design/icons";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -21,6 +22,8 @@ function Navbar() {
 
   const handleLogout = () => {
     dispatch(logout());
+    disconnectSocket();
+
     navigate("/login");
   };
 
@@ -34,20 +37,20 @@ function Navbar() {
             {user?.email}
           </Text>
         </div>
-      )
+      ),
     },
     { type: "divider" },
     {
       key: "profile",
       icon: <ProfileOutlined />,
       label: "View Profile",
-      onClick: () => navigate("/profile")
+      onClick: () => navigate("/profile"),
     },
     {
       key: "edit",
       icon: <SettingOutlined />,
       label: "Edit Profile",
-      onClick: () => navigate("/edit-profile")
+      onClick: () => navigate("/edit-profile"),
     },
     { type: "divider" },
     {
@@ -55,8 +58,8 @@ function Navbar() {
       icon: <LogoutOutlined />,
       label: "Logout",
       danger: true,
-      onClick: handleLogout
-    }
+      onClick: handleLogout,
+    },
   ];
 
   return (
@@ -71,7 +74,7 @@ function Navbar() {
         boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
         position: "sticky",
         top: 0,
-        zIndex: 100
+        zIndex: 100,
       }}
     >
       <div style={{ display: "flex", alignItems: "center" }}>
@@ -80,7 +83,7 @@ function Navbar() {
           alt="Company Logo"
           style={{
             height: 40,
-            cursor: "pointer"
+            cursor: "pointer",
           }}
           onClick={() => navigate("/dashboard")}
         />
@@ -97,15 +100,11 @@ function Navbar() {
               cursor: "pointer",
               padding: "6px 10px",
               borderRadius: 8,
-              transition: "0.2s"
+              transition: "0.2s",
             }}
             className="hover-bg"
           >
-            <Avatar
-              size={40}
-              src={user?.image}
-              icon={<UserOutlined />}
-            />
+            <Avatar size={40} src={user?.image} icon={<UserOutlined />} />
 
             <div style={{ lineHeight: 1 }}>
               <div style={{ fontWeight: 500 }}>{user?.name}</div>

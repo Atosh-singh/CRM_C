@@ -91,7 +91,7 @@ const roleSlice = createSlice({
       })
       .addCase(fetchRoles.fulfilled, (state, action) => {
         state.loading = false;
-        state.roles = action.payload.data || action.payload.roles || [];
+        state.roles = action.payload.data || action.payload.roles || (Array.isArray(action.payload) ? action.payload : []);
       })
       .addCase(fetchRoles.rejected, (state, action) => {
         state.loading = false;

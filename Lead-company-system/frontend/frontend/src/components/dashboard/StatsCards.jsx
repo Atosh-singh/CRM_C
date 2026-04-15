@@ -1,21 +1,26 @@
 import { Card, Col, Row, Statistic } from "antd";
 import {
-  CarOutlined,
-  TeamOutlined,
   UserOutlined,
-  RiseOutlined,
+  CalendarOutlined,
+  BarChartOutlined,
   CheckCircleOutlined,
+  CloseCircleOutlined,
   ClockCircleOutlined,
-  DollarOutlined,
-  DatabaseOutlined
+  InboxOutlined,
+  RiseOutlined
 } from "@ant-design/icons";
 
-function SingleStatCard({ title, value, icon, valueStyle }) {
+function SingleStatCard({ title, value, icon, valueStyle, suffix }) {
   return (
-    <Card className="rounded-2xl border-0 shadow-sm hover:shadow-md transition-all duration-300">
+    <Card className="rounded-2xl border-0 shadow-sm transition-all duration-300 hover:shadow-md">
       <div className="flex items-start justify-between">
         <div className="w-full">
-          <Statistic title={title} value={value} valueStyle={valueStyle} />
+          <Statistic
+            title={title}
+            value={value}
+            suffix={suffix}
+            valueStyle={valueStyle}
+          />
         </div>
 
         <div className="ml-4 flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-xl text-blue-600">
@@ -35,16 +40,28 @@ function StatsCards({ stats }) {
       valueStyle: { color: "#1677ff" }
     },
     {
-      title: "New Leads",
-      value: stats.newLeads,
-      icon: <DatabaseOutlined />,
+      title: "Today's Leads",
+      value: stats.todayLeads,
+      icon: <CalendarOutlined />,
+      valueStyle: { color: "#13c2c2" }
+    },
+    {
+      title: "This Month",
+      value: stats.monthLeads,
+      icon: <BarChartOutlined />,
       valueStyle: { color: "#722ed1" }
     },
     {
-      title: "Converted Leads",
-      value: stats.convertedLeads,
+      title: "Won Leads",
+      value: stats.wonLeads,
       icon: <CheckCircleOutlined />,
       valueStyle: { color: "#52c41a" }
+    },
+    {
+      title: "Lost Leads",
+      value: stats.lostLeads,
+      icon: <CloseCircleOutlined />,
+      valueStyle: { color: "#ff4d4f" }
     },
     {
       title: "Pending Leads",
@@ -53,27 +70,16 @@ function StatsCards({ stats }) {
       valueStyle: { color: "#faad14" }
     },
     {
-      title: "Total Users",
-      value: stats.totalUsers,
-      icon: <TeamOutlined />,
-      valueStyle: { color: "#13c2c2" }
+      title: "New Leads",
+      value: stats.newLeads,
+      icon: <InboxOutlined />,
+      valueStyle: { color: "#2f54eb" }
     },
     {
-      title: "Total Cars",
-      value: stats.totalCars,
-      icon: <CarOutlined />,
-      valueStyle: { color: "#eb2f96" }
-    },
-    {
-      title: "Total Teams",
-      value: stats.totalTeams,
+      title: "Conversion Rate",
+      value: stats.conversionRate,
+      suffix: "%",
       icon: <RiseOutlined />,
-      valueStyle: { color: "#fa541c" }
-    },
-    {
-      title: "Revenue",
-      value: stats.revenue,
-      icon: <DollarOutlined />,
       valueStyle: { color: "#389e0d" }
     }
   ];
@@ -87,6 +93,7 @@ function StatsCards({ stats }) {
             value={card.value}
             icon={card.icon}
             valueStyle={card.valueStyle}
+            suffix={card.suffix}
           />
         </Col>
       ))}

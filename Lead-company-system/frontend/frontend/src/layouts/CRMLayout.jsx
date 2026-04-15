@@ -2,9 +2,21 @@ import { Layout } from "antd";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 
+import { useEffect } from "react";
+import { connectSocket } from "../socket";
+
 const { Content } = Layout;
 
 function CRMLayout({ children }) {
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      connectSocket();
+    }
+  }, []);
+
   return (
     <Layout style={{ minHeight: "100vh" }}>
       

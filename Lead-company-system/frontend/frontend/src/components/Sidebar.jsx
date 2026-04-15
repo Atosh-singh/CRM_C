@@ -28,7 +28,10 @@ function Sidebar() {
 
         if (item.children) {
           const children = item.children
-            .filter((child) => canAccess(user, child.permission))
+            .filter((child) => {
+              if (!child.permission) return true;
+              return canAccess(user, child.permission);
+            })
             .map((child) => ({
               key: child.key,
               icon: child.icon,
@@ -102,32 +105,62 @@ function Sidebar() {
       </Sider>
 
       <Drawer
-        title="Authorization Panel"
-        placement="right"
-        size="large"
-        open={authDrawer}
-        onClose={() => setAuthDrawer(false)}
-      >
-        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-          <Button onClick={() => navigate("/users")}>Manage Users</Button>
+  title="Authorization Panel"
+  placement="right"
+  size="large"
+  open={authDrawer}
+  onClose={() => setAuthDrawer(false)}
+>
+  <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+    
+    <Button
+      onClick={() => {
+        setAuthDrawer(false);
+        navigate("/users");
+      }}
+    >
+      Manage Users
+    </Button>
 
-          <Button onClick={() => navigate("/users/create")}>
-            Create User
-          </Button>
+    <Button
+      type="primary"
+      onClick={() => {
+        setAuthDrawer(false);
+        navigate("/users/create");
+      }}
+    >
+      Create User
+    </Button>
 
-          <Button onClick={() => navigate("/roles/create")}>
-            Create Role
-          </Button>
+    <Button
+      onClick={() => {
+        setAuthDrawer(false);
+        navigate("/roles/create");
+      }}
+    >
+      Create Role
+    </Button>
 
-          <Button onClick={() => navigate("/permissions/create")}>
-            Create Permission
-          </Button>
+    <Button
+      onClick={() => {
+        setAuthDrawer(false);
+        navigate("/permissions/create");
+      }}
+    >
+      Create Permission
+    </Button>
 
-          <Button onClick={() => navigate("/teams/create")}>
-            Create Team
-          </Button>
-        </div>
-      </Drawer>
+    <Button
+      onClick={() => {
+        setAuthDrawer(false);
+        navigate("/teams/create");
+      }}
+    >
+      Create Team
+    </Button>
+
+  </div>
+</Drawer>
     </>
   );
 }

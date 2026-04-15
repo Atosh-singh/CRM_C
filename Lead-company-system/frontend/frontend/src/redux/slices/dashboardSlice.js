@@ -1,12 +1,11 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import API from "../../api/axios";
 
-// FETCH DASHBOARD STATS
 export const fetchDashboardStats = createAsyncThunk(
   "dashboard/fetchDashboardStats",
-  async (_, { rejectWithValue }) => {
+  async (params = {}, { rejectWithValue }) => {
     try {
-      const res = await API.get("/dashboard");
+      const res = await API.get("/dashboard", { params });
       return res.data;
     } catch (error) {
       return rejectWithValue(
@@ -36,7 +35,7 @@ const dashboardSlice = createSlice({
       })
       .addCase(fetchDashboardStats.fulfilled, (state, action) => {
         state.loading = false;
-        state.stats = action.payload.data || action.payload;
+        state.stats = action.payload.data || null;
       })
       .addCase(fetchDashboardStats.rejected, (state, action) => {
         state.loading = false;

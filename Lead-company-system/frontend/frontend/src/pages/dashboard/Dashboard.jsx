@@ -3,9 +3,14 @@ import { Alert, Button, Spin, Typography } from "antd";
 import { ReloadOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 
-import { fetchDashboardStats, clearDashboardError } from "../../redux/slices/dashboardSlice";
+import {
+  fetchDashboardStats,
+  clearDashboardError
+} from "../../redux/slices/dashboardSlice";
+import { fetchTeams } from "../../redux/slices/teamSlice";
+
 import DashboardFilters from "../../components/dashboard/DashboardFilters";
-import StatsCards from "../../components/dashboard/StatsCard";
+import StatsCards from "../../components/dashboard/StatsCards";
 import LeadsChart from "../../components/dashboard/LeadsChart";
 
 const { Title, Text } = Typography;
@@ -14,6 +19,7 @@ function Dashboard() {
   const dispatch = useDispatch();
 
   const { stats, loading, error } = useSelector((state) => state.dashboard);
+  const { teams, loading: teamsLoading } = useSelector((state) => state.teams);
 
   const [filters, setFilters] = useState({
     period: "monthly",
@@ -22,29 +28,42 @@ function Dashboard() {
   });
 
   useEffect(() => {
-    dispatch(fetchDashboardStats());
+    dispatch(fetchTeams());
   }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(fetchDashboardStats(filters));
+  }, [dispatch, filters]);
 
   const normalizedStats = useMemo(() => {
     const data = stats || {};
+    const overview = data.overview || {};
+    const charts = data.charts || {};
 
     return {
-      totalLeads: data.totalLeads || 0,
-      newLeads: data.newLeads || 0,
-      convertedLeads: data.convertedLeads || 0,
-      pendingLeads: data.pendingLeads || 0,
-      totalUsers: data.totalUsers || 0,
-      totalCars: data.totalCars || 0,
-      totalTeams: data.totalTeams || 0,
-      revenue: data.revenue || 0,
-      leadsTrend: Array.isArray(data.leadsTrend) ? data.leadsTrend : [],
-      recentActivities: Array.isArray(data.recentActivities) ? data.recentActivities : []
+      totalLeads: overview.totalLeads || 0,
+      todayLeads: overview.todayLeads || 0,
+      monthLeads: overview.monthLeads || 0,
+      wonLeads: overview.wonLeads || 0,
+      lostLeads: overview.lostLeads || 0,
+      newLeads: overview.newLeads || 0,
+      pendingLeads: overview.pendingLeads || 0,
+      convertedLeads: overview.convertedLeads || 0,
+      conversionRate: overview.conversionRate || 0,
+      leadsTrend: Array.isArray(charts.leadsTrend) ? charts.leadsTrend : [],
+      teamStats: Array.isArray(charts.teamStats) ? charts.teamStats : [],
+      userStats: Array.isArray(charts.userStats) ? charts.userStats : [],
+      statusStats: Array.isArray(charts.statusStats) ? charts.statusStats : [],
+      recentActivities: Array.isArray(data.recentActivities)
+        ? data.recentActivities
+        : []
     };
   }, [stats]);
 
   const handleRefresh = () => {
     dispatch(clearDashboardError());
-    dispatch(fetchDashboardStats());
+    dispatch(fetchTeams());
+    dispatch(fetchDashboardStats(filters));
   };
 
   return (
@@ -56,7 +75,7 @@ function Dashboard() {
               CRM Dashboard
             </Title>
             <Text type="secondary">
-              Monitor leads, users, cars, and overall business activity.
+              Monitor leads, team performance, and overall CRM activity.
             </Text>
           </div>
 
@@ -64,14 +83,19 @@ function Dashboard() {
             type="primary"
             icon={<ReloadOutlined />}
             onClick={handleRefresh}
-            loading={loading}
+            loading={loading || teamsLoading}
           >
             Refresh
           </Button>
         </div>
 
         <div className="mb-6">
-          <DashboardFilters filters={filters} setFilters={setFilters} />
+          <DashboardFilters
+            filters={filters}
+            setFilters={setFilters}
+            teams={teams}
+            teamsLoading={teamsLoading}
+          />
         </div>
 
         {error && (
@@ -106,25 +130,29 @@ function Dashboard() {
                     Recent Activity
                   </h3>
                   <p className="text-sm text-gray-500">
-                    Latest updates from your CRM system
+                    Latest lead-related updates
                   </p>
                 </div>
 
                 <div className="space-y-4">
                   {normalizedStats.recentActivities.length > 0 ? (
-                    normalizedStats.recentActivities.slice(0, 6).map((item, index) => (
-                      <div
-                        key={item._id || index}
-                        className="rounded-xl border border-gray-100 bg-gray-50 p-4"
-                      >
-                        <p className="text-sm font-medium text-gray-800">
-                          {item.title || item.message || "Activity update"}
-                        </p>
-                        <p className="mt-1 text-xs text-gray-500">
-                          {item.time || item.createdAt || "Recently"}
-                        </p>
-                      </div>
-                    ))
+                    normalizedStats.recentActivities
+                      .slice(0, 6)
+                      .map((item, index) => (
+                        <div
+                          key={item._id || index}
+                          className="rounded-xl border border-gray-100 bg-gray-50 p-4"
+                        >
+                          <p className="text-sm font-medium text-gray-800">
+                            {item.title || "Activity update"}
+                          </p>
+                          <p className="mt-1 text-xs text-gray-500">
+                            {item.time
+                              ? new Date(item.time).toLocaleString()
+                              : "Recently"}
+                          </p>
+                        </div>
+                      ))
                   ) : (
                     <div className="rounded-xl border border-dashed border-gray-200 p-6 text-center text-sm text-gray-500">
                       No recent activity available

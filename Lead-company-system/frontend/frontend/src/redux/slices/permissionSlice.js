@@ -92,7 +92,7 @@ const permissionSlice = createSlice({
       .addCase(fetchPermissions.fulfilled, (state, action) => {
         state.loading = false;
         state.permissions =
-          action.payload.data || action.payload.permissions || [];
+          action.payload.data || action.payload.permissions || (Array.isArray(action.payload) ? action.payload : []);
       })
       .addCase(fetchPermissions.rejected, (state, action) => {
         state.loading = false;

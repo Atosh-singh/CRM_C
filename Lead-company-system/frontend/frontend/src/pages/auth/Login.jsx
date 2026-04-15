@@ -3,6 +3,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { loginUser } from "../../redux/slices/authSlice";
 
+// ✅ ADD THIS
+import { connectSocket } from "../../socket";
+
 function Login() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -13,8 +16,19 @@ function Login() {
       const res = await dispatch(loginUser(values));
 
       if (res.meta.requestStatus === "fulfilled") {
+
+        // ✅ ADD THIS (store token for axios + socket)
+        const token = res.payload?.accessToken;
+        if (token) {
+          localStorage.setItem("token", token);
+        }
+
+        // ✅ ADD THIS (connect socket)
+        connectSocket();
+
         message.success("Login successful");
         navigate("/dashboard");
+
       } else {
         message.error(res.payload?.message || "Invalid credentials");
       }

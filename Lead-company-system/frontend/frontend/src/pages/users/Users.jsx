@@ -3,6 +3,8 @@ import { Modal, Descriptions, message } from "antd";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
+import { getSocket } from "../../socket";
+
 import { fetchUsers } from "../../redux/slices/userSlice";
 import PageToolbar from "../../components/PageToolbar";
 import UserTable from "../../components/users/UserTable";
@@ -17,6 +19,8 @@ function Users() {
   const [selectedUser, setSelectedUser] = useState(null);
   const [open, setOpen] = useState(false);
 
+  const [onlineUsers, setOnlineUsers] = useState([]);
+
   useEffect(() => {
     dispatch(fetchUsers());
   }, [dispatch]);
@@ -30,6 +34,19 @@ function Users() {
       message.error(error);
     }
   }, [error]);
+
+  
+useEffect(() => {
+  const socket = getSocket();
+  if (!socket) return;
+
+  socket.on("online_users", (users) => {
+    setOnlineUsers(users);
+  });
+
+  return () => socket.off("online_users");
+}, []);
+
 
   const handleSearch = (value) => {
     const searchValue = value.toLowerCase();
@@ -67,6 +84,7 @@ function Users() {
         data={filteredUsers}
         loading={loading}
         onRowClick={handleRowClick}
+         onlineUsers={onlineUsers}   // Online user
       />
 
       <Modal
