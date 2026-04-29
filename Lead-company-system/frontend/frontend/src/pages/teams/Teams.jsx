@@ -10,6 +10,9 @@ import {
   deleteTeam
 } from "../../redux/slices/teamSlice";
 
+import { fetchUsers } from "../../redux/slices/userSlice";
+import { fetchCarTypes } from "../../redux/slices/carTypeSlice";
+
 import PageToolbar from "../../components/PageToolbar";
 import TeamForm from "../../components/teams/TeamForm";
 import TeamTable from "../../components/teams/TeamTable";
@@ -21,18 +24,23 @@ function Teams() {
   const [filteredTeams, setFilteredTeams] = useState([]);
   const [selectedTeam, setSelectedTeam] = useState(null);
   const [detailsOpen, setDetailsOpen] = useState(false);
-  const [formOpen, setFormOpen] = useState(false);
-  const [editingTeam, setEditingTeam] = useState(null);
+ 
   const [drawerOpen, setDrawerOpen] = useState(false);
 const [drawerTeam, setDrawerTeam] = useState(null);
+const [showDeleted, setShowDeleted] = useState(false);
 
   useEffect(() => {
     dispatch(fetchTeams());
+      dispatch(fetchUsers());       // ✅ already working
+  dispatch(fetchCarTypes()); 
   }, [dispatch]);
 
-  useEffect(() => {
-    setFilteredTeams(teams);
-  }, [teams]);
+useEffect(() => {
+  const filtered = teams.filter((t) =>
+    showDeleted ? t.removed : !t.removed
+  );
+  setFilteredTeams(filtered);
+}, [teams, showDeleted]);
 
   const handleSearch = (value) => {
     const filtered = teams.filter((team) =>
@@ -50,52 +58,63 @@ const [drawerTeam, setDrawerTeam] = useState(null);
     }
   };
 
-  const handleSubmit = async (values) => {
-    try {
-      if (editingTeam) {
-        await dispatch(
-          updateTeam({ id: editingTeam._id, teamData: values })
-        ).unwrap();
-        message.success("Team updated");
-      } else {
-        await dispatch(createTeam(values)).unwrap();
-        message.success("Team created");
-      }
+  const handleRestore = async (id) => {
+  await dispatch(restoreTeam(id));
+  message.success("Team restored");
+};
 
-      setFormOpen(false);
-      setEditingTeam(null);
-    } catch (err) {
-      message.error(err || "Action failed");
+const handleSubmit = async (values) => {
+  console.log("🔥 SUBMIT TRIGGERED:", values);
+
+  try {
+    const current = drawerTeam; // ✅ FIXED
+
+    if (current) {
+      console.log("👉 UPDATE MODE");
+
+      await dispatch(
+        updateTeam({
+          id: current._id,
+          teamData: values,
+        })
+      ).unwrap();
+
+      message.success("Team updated");
+    } else {
+      console.log("👉 CREATE MODE");
+
+      await dispatch(createTeam(values)).unwrap();
+
+      message.success("Team created");
     }
-  };
+
+    setDrawerOpen(false);
+    setDrawerTeam(null);
+
+    dispatch(fetchTeams());
+
+  } catch (err) {
+    console.error("❌ ERROR:", err);
+    message.error(err || "Action failed");
+  }
+};
 
   const handleRowClick = (record) => {
     setSelectedTeam(record);
     setDetailsOpen(true);
   };
 
-  const handleOpenCreateModal = () => {
-    setEditingTeam(null);
-    setFormOpen(true);
-  };
+ 
 
-  const handleOpenEditModal = (team) => {
-    setEditingTeam(team);
-    setFormOpen(true);
-  };
-
-  const handleCloseFormModal = () => {
-    setFormOpen(false);
-    setEditingTeam(null);
-  };
-
-  const handleOpenDrawerCreate = () => {
+ const handleOpenDrawerCreate = () => {
   setDrawerTeam(null);
+
   setDrawerOpen(true);
 };
 
 const handleOpenDrawerEdit = (team) => {
-  setDrawerTeam(team);
+  setDrawerTeam(team);   // ✅ THIS IS IMPORTANT
+
   setDrawerOpen(true);
 };
 
@@ -115,7 +134,11 @@ const handleCloseDrawer = () => {
             label: "Add Team",
             type: "primary",
             onClick: handleOpenDrawerCreate
-          }
+          },
+            {
+    label: showDeleted ? "Show Active" : "Show Trash",
+    onClick: () => setShowDeleted(!showDeleted)
+  }
         ]}
       />
 
@@ -125,6 +148,7 @@ const handleCloseDrawer = () => {
         onRowClick={handleRowClick}
         onEdit={handleOpenDrawerEdit}
         onDelete={handleDelete}
+        onRestore={handleRestore}
       />
 
       <Modal
@@ -154,20 +178,9 @@ const handleCloseDrawer = () => {
         )}
       </Modal>
 
-      <Modal
-        title={editingTeam ? "Edit Team" : "Create Team"}
-        open={formOpen}
-        onCancel={handleCloseFormModal}
-        footer={null}
-        destroyOnClose
-      >
-        <TeamForm
-          initialValues={editingTeam}
-          onSubmit={handleSubmit}
-        />
-      </Modal>
+      
 
-      <AppDrawer
+<AppDrawer
   title={drawerTeam ? "Edit Team" : "Create Team"}
   open={drawerOpen}
   onClose={handleCloseDrawer}
@@ -176,6 +189,7 @@ const handleCloseDrawer = () => {
     initialValues={drawerTeam}
     onSubmit={async (values) => {
       await handleSubmit(values);
+          console.log("📦 FORM SUBMIT CALLED");
       handleCloseDrawer();
     }}
   />

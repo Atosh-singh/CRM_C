@@ -5,42 +5,53 @@ import {
   CarOutlined,
   SafetyOutlined,
   KeyOutlined,
-  SettingOutlined
+  SettingOutlined,
 } from "@ant-design/icons";
 
 export const menuConfig = [
-
   // ✅ MAIN NAVIGATION
   {
     key: "/dashboard",
     icon: <DashboardOutlined />,
     label: "Dashboard",
-    permission: "VIEW_DASHBOARD"
+    permission: "VIEW_DASHBOARD",
   },
 
   {
     key: "/leads",
     icon: <UserOutlined />,
     label: "Leads",
-    permission: "VIEW_LEAD"
+    permission: "VIEW_LEAD",
   },
 
   {
-  key: "/google-meet",
-  label: "Google Meet",
-  icon: "🎥" // or Ant icon
+    key: "/google-meet",
+    label: "Google Meet",
+    icon: "🎥", // or Ant icon
+  },
+  {
+  key: "/meetings",
+  label: "Meetings",
+  icon: "📅",
 },
- 
+
+{
+  key: "/ads",
+  label: "Ads Analytics",
+  icon: "📊"
+},
 
   {
     key: "/teams",
     icon: <TeamOutlined />,
     label: "Teams",
-    permission: "VIEW_TEAMS"
+    permission: "VIEW_TEAMS",
   },
 
+
+
   {
-    type: "divider"
+    type: "divider",
   },
 
   // ✅ ADMIN SECTION (CLEAN)
@@ -54,40 +65,40 @@ export const menuConfig = [
         key: "/users",
         icon: <TeamOutlined />,
         label: "Users",
-        permission: "VIEW_USERS"
+        permission: "VIEW_USERS",
       },
 
       {
         key: "/roles",
         icon: <SafetyOutlined />,
         label: "Roles",
-        permission: "VIEW_ROLE"
+        permission: "VIEW_ROLE",
       },
 
       {
         key: "/permissions",
         icon: <KeyOutlined />,
         label: "Permissions",
-        permission: "VIEW_PERMISSION"
+        permission: "VIEW_PERMISSION",
       },
 
-       {
-    key: "/cars",
-    icon: <CarOutlined />,
-    label: "Cars",
-    permission: "VIEW_CAR"
-  },
       {
-  key: "/admin/permissions",
-  icon: <SettingOutlined />,
-  label: "Permission Matrix"
-},
+        key: "/cars",
+        icon: <CarOutlined />,
+        label: "Cars",
+        permission: "VIEW_CAR",
+      },
+      {
+        key: "/admin/permissions",
+        icon: <SettingOutlined />,
+        label: "Permission Matrix",
+      },
 
       {
         key: "authorization",
         icon: <SettingOutlined />,
-        label: "Authorization Panel"
-      }
-    ]
-  }
+        label: "Authorization Panel",
+      },
+    ],
+  },
 ];

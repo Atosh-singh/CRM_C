@@ -10,9 +10,17 @@ function CreateRole() {
 
   const onFinish = async (values) => {
     try {
-      await dispatch(createRole(values)).unwrap();
+      const payload = {
+        name: values.name,
+        description: values.description || "",
+        permissions: values.permissions || [] // ✅ IMPORTANT
+      };
+
+      await dispatch(createRole(payload)).unwrap();
+
       message.success("Role created successfully");
       navigate("/roles");
+
     } catch (err) {
       message.error(err || "Error creating role");
     }

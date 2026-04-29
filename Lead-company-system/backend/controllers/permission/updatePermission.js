@@ -1,10 +1,9 @@
 const { Permission } = require("../../models/Permission");
-const { clearCache } = require("../../utils/cacheInvalidator"); // ✅ Redis cache clear
+const { clearCache } = require("../../utils/cacheInvalidator");
 
-// Update Permission
 const updatePermission = async (req, res) => {
   try {
-    const { name, description } = req.body;
+    const { name, description, enabled } = req.body;
 
     const permission = await Permission.findById(req.params.id);
 
@@ -12,29 +11,87 @@ const updatePermission = async (req, res) => {
       return res.status(404).json({ message: "Permission not found" });
     }
 
-    // Optional: Prevent updating certain system permissions
+    // 🔒 Protect system permission (optional)
     if (permission.name === "SUPER_ADMIN") {
       return res.status(403).json({
         message: "This permission cannot be modified",
       });
     }
 
-    if (name) permission.name = name;
-    if (description) permission.description = description;
+    // ❌ Prevent updating deleted permission
+    if (permission.removed) {
+      return res.status(400).json({
+        message: "Cannot update deleted permission",
+      });
+    }
+
+    // =========================
+    // ✅ NAME UPDATE + DUPLICATE CHECK
+    // =========================
+    if (name !== undefined) {
+      const normalizedName = name.trim().toUpperCase();
+
+      if (!normalizedName) {
+        return res.status(400).json({
+          message: "Permission name cannot be empty",
+        });
+      }
+
+      if (normalizedName !== permission.name) {
+        const existing = await Permission.findOne({
+          name: normalizedName,
+          removed: false,
+          _id: { $ne: permission._id },
+        });
+
+        if (existing) {
+          return res.status(409).json({
+            message: "Permission already exists",
+          });
+        }
+
+        permission.name = normalizedName;
+      }
+    }
+
+
+    // =========================
+// ✅ ENABLE/DISABLE UPDATE
+// =========================
+// after description block
+
+if (enabled !== undefined) {
+  permission.enabled = enabled;
+}
+
+    // =========================
+    // ✅ DESCRIPTION UPDATE
+    // =========================
+    if (description !== undefined) {
+      permission.description = description || "";
+    }
 
     await permission.save();
 
-    // Clear relevant caches
     await clearCache("permissions");
-    await clearCache("roles"); // Roles may depend on permissions
+    await clearCache("roles");
 
-    res.json(permission);
+    return res.json({
+      success: true,
+      data: permission,
+    });
+
   } catch (err) {
     console.error("Update Permission Error:", err);
+
+    if (err.code === 11000) {
+      return res.status(409).json({
+        message: "Permission already exists",
+      });
+    }
+
     res.status(500).json({ message: "Internal server error" });
   }
 };
 
-module.exports = {
-  updatePermission,
-};
+module.exports = { updatePermission };

@@ -23,6 +23,8 @@ import EditProfile from "../pages/users/EditProfile";
 import PermissionMatrix from "../pages/admin/PermissionMatrix";
 
 import GoogleMeet from "../pages/GoogleMeet/GoogleMeet";
+import MeetingDashboard from "../pages/meetings/MeetingDashboard";
+import AdsDashboard from "../pages/ads/AdsDashboard";
 
 function AppRoutes() {
   return (
@@ -187,12 +189,34 @@ function AppRoutes() {
   }
 />
 
+<Route
+  path="/meetings"
+  element={
+    <ProtectedRoute>
+      <CRMLayout>
+        <MeetingDashboard />
+      </CRMLayout>
+    </ProtectedRoute>
+  }
+/>
+
         <Route
   path="/admin/permissions"
   element={
     <ProtectedRoute>
       <CRMLayout>
         <PermissionMatrix />
+      </CRMLayout>
+    </ProtectedRoute>
+  }
+/>
+
+<Route
+  path="/ads"
+  element={
+    <ProtectedRoute>
+      <CRMLayout>
+        <AdsDashboard />
       </CRMLayout>
     </ProtectedRoute>
   }

@@ -36,7 +36,7 @@ export const updateRole = createAsyncThunk(
   "roles/updateRole",
   async ({ id, roleData }, { rejectWithValue }) => {
     try {
-      const res = await API.put(`/roles/${id}`, roleData);
+      const res = await API.patch(`/roles/${id}`, roleData);
       return res.data;
     } catch (error) {
       return rejectWithValue(

@@ -14,6 +14,9 @@ const carRoutes = require("./car.routes");
 const carTypeRoutes = require("./carType.routes");
 const googleAuthRoutes = require("./googleAuthRoutes");
 
+const meetingRoutes = require("./meeting.routes");
+const adsRoutes = require("./ads.routes");
+
 router.use("/public", publicRoutes);
 
 router.use("/auth", authRoutes);
@@ -35,5 +38,9 @@ router.use("/cars", carRoutes);
 router.use("/car-types", carTypeRoutes);
 
 router.use("/google", googleAuthRoutes);
+
+router.use("/meetings", meetingRoutes);
+
+router.use("/ads", adsRoutes);
 
 module.exports = router;

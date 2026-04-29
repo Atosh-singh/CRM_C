@@ -6,30 +6,35 @@ const { TextArea } = Input;
 function RoleForm({ initialValues, permissions = [], onSubmit }) {
   const [form] = Form.useForm();
 
+  // ✅ Sync form when editing
   useEffect(() => {
-    const selectedPermissions =
-      initialValues?.permissions?.map((value) => {
-        // supports both stored ids and stored names
-        const matchedPermission = permissions.find(
-          (permission) =>
-            permission._id === value || permission.name === value
-        );
+    if (!initialValues) return;
 
-        return matchedPermission ? matchedPermission._id : value;
+    const selectedPermissions =
+      initialValues.permissions?.map((permName) => {
+        const match = permissions.find(p => p.name === permName);
+        return match?._id;
       }) || [];
 
     form.setFieldsValue({
-      name: initialValues?.name || "",
-      description: initialValues?.description || "",
+      name: initialValues.name || "",
+      description: initialValues.description || "",
       permissions: selectedPermissions
     });
   }, [initialValues, permissions, form]);
 
-  const handleFinish = (values) => {
-    onSubmit(values);
-    form.resetFields();
+  // ✅ SINGLE CLEAN HANDLE FUNCTION
+ const handleFinish = (values) => {
+  const payload = {
+    name: values.name.trim(),
+    description: values.description || "",
+    permissions: values.permissions || [] // ALWAYS send IDs
   };
 
+  onSubmit(payload);
+};
+
+  // ✅ Select options
   const permissionOptions = permissions.map((permission) => ({
     label: permission.name,
     value: permission._id
@@ -66,6 +71,8 @@ function RoleForm({ initialValues, permissions = [], onSubmit }) {
           allowClear
           placeholder="Select permissions"
           options={permissionOptions}
+          showSearch
+          optionFilterProp="label"
         />
       </Form.Item>
 

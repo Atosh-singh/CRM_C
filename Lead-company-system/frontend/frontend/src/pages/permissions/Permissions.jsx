@@ -6,7 +6,8 @@ import {
   fetchPermissions,
   createPermission,
   updatePermission,
-  deletePermission
+  deletePermission,
+  restorePermission,
 } from "../../redux/slices/permissionSlice";
 
 import PageToolbar from "../../components/PageToolbar";
@@ -21,29 +22,47 @@ function Permissions() {
   const [filteredPermissions, setFilteredPermissions] = useState([]);
   const [selectedPermission, setSelectedPermission] = useState(null);
   const [detailsOpen, setDetailsOpen] = useState(false);
+
   const [formOpen, setFormOpen] = useState(false);
   const [editingPermission, setEditingPermission] = useState(null);
+
   const [drawerOpen, setDrawerOpen] = useState(false);
-const [drawerPermission, setDrawerPermission] = useState(null);
+  const [drawerPermission, setDrawerPermission] = useState(null);
 
-
+  const [showDeleted, setShowDeleted] = useState(false);
 
   useEffect(() => {
     dispatch(fetchPermissions());
   }, [dispatch]);
 
+  // useEffect(() => {
+  //   setFilteredPermissions(permissions || []);
+  // }, [permissions]);
+
   useEffect(() => {
-    setFilteredPermissions(permissions || []);
-  }, [permissions]);
+    const filtered = (permissions || []).filter((p) =>
+      showDeleted ? p.removed : !p.removed,
+    );
+    setFilteredPermissions(filtered);
+  }, [permissions, showDeleted]);
 
   const handleSearch = (value) => {
     const searchValue = value.toLowerCase();
 
     const filtered = (permissions || []).filter((permission) =>
-      permission.name?.toLowerCase().includes(searchValue)
+      permission.name?.toLowerCase().includes(searchValue),
     );
 
     setFilteredPermissions(filtered);
+  };
+
+  const handleRestore = async (id) => {
+    try {
+      await dispatch(restorePermission(id)).unwrap();
+      message.success("Permission restored");
+    } catch (err) {
+      message.error(err || "Restore failed");
+    }
   };
 
   const handleDelete = async (id) => {
@@ -55,33 +74,59 @@ const [drawerPermission, setDrawerPermission] = useState(null);
     }
   };
 
+  // 🔥 SAME SMART LOGIC AS ROLES
   const handleSubmit = async (values) => {
     try {
-      const payload = {
-        name: values.name,
-        description: values.description || ""
-      };
+      const currentPermission = editingPermission || drawerPermission;
+      let payload = {};
 
-      if (editingPermission) {
+      if (currentPermission) {
+        // NAME CHECK
+        if (values.name !== currentPermission.name) {
+          payload.name = values.name.trim();
+        }
+
+        // DESCRIPTION CHECK
+        if (values.description !== currentPermission.description) {
+          payload.description = values.description || "";
+        }
+
+        // ❌ NOTHING CHANGED
+        if (Object.keys(payload).length === 0) {
+          message.info("No changes detected");
+          return;
+        }
+
         await dispatch(
           updatePermission({
-            id: editingPermission._id,
-            permissionData: payload
-          })
+            id: currentPermission._id,
+            permissionData: payload,
+          }),
         ).unwrap();
 
         message.success("Permission updated");
       } else {
-        await dispatch(createPermission(payload)).unwrap();
+        // CREATE
+        await dispatch(
+          createPermission({
+            name: values.name.trim(),
+            description: values.description || "",
+          }),
+        ).unwrap();
+
         message.success("Permission created");
       }
 
+      // RESET STATES
       setFormOpen(false);
       setEditingPermission(null);
+      setDrawerPermission(null);
     } catch (err) {
       message.error(err || "Action failed");
     }
   };
+
+  // ---------------- UI HANDLERS ----------------
 
   const handleRowClick = (record) => {
     setSelectedPermission(record);
@@ -94,7 +139,7 @@ const [drawerPermission, setDrawerPermission] = useState(null);
   };
 
   const handleOpenEditModal = (permission) => {
-    setEditingPermission(permission);
+    setEditingPermission({ ...permission });
     setFormOpen(true);
   };
 
@@ -104,32 +149,36 @@ const [drawerPermission, setDrawerPermission] = useState(null);
   };
 
   const handleOpenDrawerCreate = () => {
-  setDrawerPermission(null);
-  setDrawerOpen(true);
-};
+    setDrawerPermission(null);
+    setDrawerOpen(true);
+  };
 
-const handleOpenDrawerEdit = (permission) => {
-  setDrawerPermission(permission);
-  setDrawerOpen(true);
-};
+  const handleOpenDrawerEdit = (permission) => {
+    setDrawerPermission({ ...permission });
+    setDrawerOpen(true);
+  };
 
-const handleCloseDrawer = () => {
-  setDrawerOpen(false);
-  setDrawerPermission(null);
-};
+  const handleCloseDrawer = () => {
+    setDrawerOpen(false);
+    setDrawerPermission(null);
+  };
 
   return (
     <div>
       <PageToolbar
         title="Permissions"
-        showSearch={true}
+        showSearch
         onSearch={handleSearch}
         actions={[
           {
             label: "Add Permission",
             type: "primary",
-            onClick: handleOpenDrawerCreate
-          }
+            onClick: handleOpenDrawerCreate,
+          },
+          {
+            label: showDeleted ? "Show Active" : "Show Trash",
+            onClick: () => setShowDeleted(!showDeleted),
+          },
         ]}
       />
 
@@ -139,8 +188,10 @@ const handleCloseDrawer = () => {
         onRowClick={handleRowClick}
         onEdit={handleOpenDrawerEdit}
         onDelete={handleDelete}
+        onRestore={handleRestore}
       />
 
+      {/* DETAILS MODAL */}
       <Modal
         title="Permission Details"
         open={detailsOpen}
@@ -164,6 +215,7 @@ const handleCloseDrawer = () => {
         )}
       </Modal>
 
+      {/* MODAL FORM */}
       <Modal
         title={editingPermission ? "Edit Permission" : "Create Permission"}
         open={formOpen}
@@ -177,19 +229,20 @@ const handleCloseDrawer = () => {
         />
       </Modal>
 
+      {/* DRAWER FORM */}
       <AppDrawer
-  title={drawerPermission ? "Edit Permission" : "Create Permission"}
-  open={drawerOpen}
-  onClose={handleCloseDrawer}
->
-  <PermissionForm
-    initialValues={drawerPermission}
-    onSubmit={async (values) => {
-      await handleSubmit(values);
-      handleCloseDrawer();
-    }}
-  />
-</AppDrawer>
+        title={drawerPermission ? "Edit Permission" : "Create Permission"}
+        open={drawerOpen}
+        onClose={handleCloseDrawer}
+      >
+        <PermissionForm
+          initialValues={drawerPermission}
+          onSubmit={async (values) => {
+            await handleSubmit(values);
+            handleCloseDrawer();
+          }}
+        />
+      </AppDrawer>
     </div>
   );
 }

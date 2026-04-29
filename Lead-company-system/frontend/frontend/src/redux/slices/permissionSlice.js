@@ -36,11 +36,26 @@ export const updatePermission = createAsyncThunk(
   "permissions/updatePermission",
   async ({ id, permissionData }, { rejectWithValue }) => {
     try {
-      const res = await API.put(`/permissions/${id}`, permissionData);
+      const res = await API.patch(`/permissions/${id}`, permissionData);
       return res.data;
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.message || "Failed to update permission"
+      );
+    }
+  }
+);
+
+// RESTORE PERMISSION
+export const restorePermission = createAsyncThunk(
+  "permissions/restorePermission",
+  async (id, { rejectWithValue }) => {
+    try {
+      await API.patch(`/permissions/restore/${id}`);
+      return id;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to restore permission"
       );
     }
   }
@@ -136,6 +151,14 @@ const permissionSlice = createSlice({
         state.updateLoading = false;
         state.error = action.payload;
       })
+
+      .addCase(restorePermission.fulfilled, (state, action) => {
+  state.permissions = state.permissions.map((p) =>
+    p._id === action.payload
+      ? { ...p, removed: false, enabled: true }
+      : p
+  );
+})
 
       .addCase(deletePermission.pending, (state) => {
         state.deleteLoading = true;

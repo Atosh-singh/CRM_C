@@ -6,7 +6,7 @@ import {
   fetchRoles,
   createRole,
   updateRole,
-  deleteRole
+  deleteRole,
 } from "../../redux/slices/roleSlice";
 
 import { fetchPermissions } from "../../redux/slices/permissionSlice";
@@ -25,10 +25,12 @@ function Roles() {
   const [filteredRoles, setFilteredRoles] = useState([]);
   const [selectedRole, setSelectedRole] = useState(null);
   const [detailsOpen, setDetailsOpen] = useState(false);
+
   const [formOpen, setFormOpen] = useState(false);
   const [editingRole, setEditingRole] = useState(null);
+
   const [drawerOpen, setDrawerOpen] = useState(false);
-const [drawerRole, setDrawerRole] = useState(null);
+  const [drawerRole, setDrawerRole] = useState(null);
 
   useEffect(() => {
     dispatch(fetchRoles());
@@ -39,11 +41,20 @@ const [drawerRole, setDrawerRole] = useState(null);
     setFilteredRoles(roles || []);
   }, [roles]);
 
+  // 🔥 Optimized permission map (FAST lookup)
   const permissionMap = useMemo(() => {
     const map = {};
-    permissions.forEach((permission) => {
-      map[permission._id] = permission.name;
-      map[permission.name] = permission.name;
+    permissions.forEach((p) => {
+      map[p._id] = p.name;
+      map[p.name] = p.name;
+    });
+    return map;
+  }, [permissions]);
+
+  const permissionNameToId = useMemo(() => {
+    const map = {};
+    permissions.forEach((p) => {
+      map[p.name] = p._id;
     });
     return map;
   }, [permissions]);
@@ -71,47 +82,76 @@ const [drawerRole, setDrawerRole] = useState(null);
     }
   };
 
+  // 🔥 CLEAN SUBMIT LOGIC
   const handleSubmit = async (values) => {
     try {
-      if (editingRole) {
-        // ⚠️ current backend updateRole expects permission NAMES
-        const permissionNames = (values.permissions || []).map((id) => {
-          const matchedPermission = permissions.find((p) => p._id === id);
-          return matchedPermission ? matchedPermission.name : id;
-        });
+      let payload = {};
+      const currentRole = editingRole || drawerRole;
 
-        const payload = {
-          name: values.name,
-          description: values.description || "",
-          permissions: permissionNames
-        };
+      if (currentRole) {
+        // NAME
+        if (values.name !== currentRole.name) {
+          payload.name = values.name.trim();
+        }
+
+        // DESCRIPTION
+        if (values.description !== currentRole.description) {
+          payload.description = values.description || "";
+        }
+
+        // PERMISSIONS (optimized)
+        const oldPermIds = (currentRole.permissions || [])
+          .map((name) => permissionNameToId[name])
+          .filter(Boolean);
+
+        const newPerms = values.permissions || [];
+
+        const isPermissionsChanged =
+          oldPermIds.length !== newPerms.length ||
+          oldPermIds.some((id) => !newPerms.includes(id));
+
+        if (isPermissionsChanged) {
+          payload.permissions = newPerms;
+        }
+
+        if (Object.keys(payload).length === 0) {
+          message.info("No changes detected");
+          return;
+        }
 
         await dispatch(
           updateRole({
-            id: editingRole._id,
-            roleData: payload
+            id: currentRole._id,
+            roleData: payload,
           })
         ).unwrap();
 
         message.success("Role updated");
-      } else {
-        // ✅ current backend createRole expects permission IDS
-        const payload = {
-          name: values.name,
-          description: values.description || "",
-          permissions: values.permissions || []
-        };
 
-        await dispatch(createRole(payload)).unwrap();
+      } else {
+        // CREATE
+        await dispatch(
+          createRole({
+            name: values.name.trim(),
+            description: values.description || "",
+            permissions: values.permissions || [],
+          })
+        ).unwrap();
+
         message.success("Role created");
       }
 
+      // RESET STATES
       setFormOpen(false);
       setEditingRole(null);
+      setDrawerRole(null);
+
     } catch (err) {
       message.error(err || "Action failed");
     }
   };
+
+  // ---------------- UI HANDLERS ----------------
 
   const handleRowClick = (record) => {
     setSelectedRole(record);
@@ -124,7 +164,7 @@ const [drawerRole, setDrawerRole] = useState(null);
   };
 
   const handleOpenEditModal = (role) => {
-    setEditingRole(role);
+    setEditingRole({ ...role });
     setFormOpen(true);
   };
 
@@ -134,32 +174,32 @@ const [drawerRole, setDrawerRole] = useState(null);
   };
 
   const handleOpenDrawerCreate = () => {
-  setDrawerRole(null);
-  setDrawerOpen(true);
-};
+    setDrawerRole(null);
+    setDrawerOpen(true);
+  };
 
-const handleOpenDrawerEdit = (role) => {
-  setDrawerRole(role);
-  setDrawerOpen(true);
-};
+  const handleOpenDrawerEdit = (role) => {
+    setDrawerRole({ ...role });
+    setDrawerOpen(true);
+  };
 
-const handleCloseDrawer = () => {
-  setDrawerOpen(false);
-  setDrawerRole(null);
-};
+  const handleCloseDrawer = () => {
+    setDrawerOpen(false);
+    setDrawerRole(null);
+  };
 
   return (
     <div>
       <PageToolbar
         title="Roles"
-        showSearch={true}
+        showSearch
         onSearch={handleSearch}
         actions={[
           {
             label: "Add Role",
             type: "primary",
-            onClick: handleOpenDrawerCreate
-          }
+            onClick: handleOpenDrawerCreate,
+          },
         ]}
       />
 
@@ -167,11 +207,12 @@ const handleCloseDrawer = () => {
         data={filteredRoles}
         loading={loading}
         onRowClick={handleRowClick}
-        onEdit={ handleOpenDrawerCreate}
+        onEdit={handleOpenDrawerEdit}
         onDelete={handleDelete}
         resolvePermissionName={resolvePermissionName}
       />
 
+      {/* DETAILS MODAL */}
       <Modal
         title="Role Details"
         open={detailsOpen}
@@ -191,9 +232,9 @@ const handleCloseDrawer = () => {
             <Descriptions.Item label="Permissions">
               {selectedRole.permissions?.length ? (
                 <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                  {selectedRole.permissions.map((permission, index) => (
-                    <Tag key={`${permission}-${index}`}>
-                      {resolvePermissionName(permission)}
+                  {selectedRole.permissions.map((perm, i) => (
+                    <Tag key={`${perm}-${i}`}>
+                      {resolvePermissionName(perm)}
                     </Tag>
                   ))}
                 </div>
@@ -213,6 +254,7 @@ const handleCloseDrawer = () => {
         )}
       </Modal>
 
+      {/* MODAL FORM */}
       <Modal
         title={editingRole ? "Edit Role" : "Create Role"}
         open={formOpen}
@@ -227,21 +269,21 @@ const handleCloseDrawer = () => {
         />
       </Modal>
 
-<AppDrawer
-  title={drawerRole ? "Edit Role" : "Create Role"}
-  open={drawerOpen}
-  onClose={handleCloseDrawer}
->
-  <RoleForm
-    initialValues={drawerRole}
-    permissions={permissions}
-    onSubmit={async (values) => {
-      await handleSubmit(values);
-      handleCloseDrawer();
-    }}
-  />
-</AppDrawer>
-
+      {/* DRAWER FORM */}
+      <AppDrawer
+        title={drawerRole ? "Edit Role" : "Create Role"}
+        open={drawerOpen}
+        onClose={handleCloseDrawer}
+      >
+        <RoleForm
+          initialValues={drawerRole}
+          permissions={permissions}
+          onSubmit={async (values) => {
+            await handleSubmit(values);
+            handleCloseDrawer();
+          }}
+        />
+      </AppDrawer>
     </div>
   );
 }

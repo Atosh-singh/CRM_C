@@ -1,6 +1,9 @@
 const mongoose = require("mongoose");
 
 const leadDistributionSchema = new mongoose.Schema({
+  removed: { type: Boolean, default: false },
+    enabled: { type: Boolean, default: true },
+
   carType: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "CarType",

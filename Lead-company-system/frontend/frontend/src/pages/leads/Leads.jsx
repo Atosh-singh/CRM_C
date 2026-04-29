@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import { message } from "antd";
+import { Tabs } from "antd";
 import { useDispatch, useSelector } from "react-redux";
+
+import usePageActions from "../../hooks/usePageActions";
+import { useNavigate } from "react-router-dom";
 
 import {
   fetchLeads,
@@ -36,8 +40,10 @@ function Leads() {
     page: 1,
     limit: 10,
     search: "",
+     status: "",
   });
 
+  const [statusTab, setStatusTab] = useState("all");
 
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
@@ -45,6 +51,8 @@ function Leads() {
   const [selectedLead, setSelectedLead] = useState(null);
   const [editingLead, setEditingLead] = useState(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     dispatch(fetchLeads(filters));
@@ -76,28 +84,27 @@ function Leads() {
     setDetailsOpen(true);
   };
 
-const handleSubmitLead = async (values) => {
-  try {
-    if (editingLead) {
-      await dispatch(
-        updateLead({ id: editingLead._id, leadData: values })
-      ).unwrap();
-      message.success("Lead updated successfully");
-    } else {
-      await dispatch(createLead(values)).unwrap();
-      message.success("Lead created successfully");
+  const handleSubmitLead = async (values) => {
+    try {
+      if (editingLead) {
+        await dispatch(
+          updateLead({ id: editingLead._id, leadData: values }),
+        ).unwrap();
+        message.success("Lead updated successfully");
+      } else {
+        await dispatch(createLead(values)).unwrap();
+        message.success("Lead created successfully");
+      }
+
+      // ✅ FIX
+      dispatch(fetchLeads(filters));
+
+      setDrawerOpen(false);
+      setEditingLead(null);
+    } catch (err) {
+      message.error(err || "Action failed");
     }
-
-    // ✅ FIX
-    dispatch(fetchLeads(filters));
-
-    setDrawerOpen(false);
-    setEditingLead(null);
-
-  } catch (err) {
-    message.error(err || "Action failed");
-  }
-};
+  };
 
   const handleConfirmDelete = async () => {
     try {
@@ -119,8 +126,72 @@ const handleSubmitLead = async (values) => {
     }
   };
 
+  // 🔥 PAGE ACTION BAR 
+usePageActions({
+  actions: [
+   
+    {
+      label: "Export",
+      onClick: () => {
+        console.log("Export Leads");
+        message.info("Export feature coming soon");
+      },
+    },
+  ],
+
+  filters: [
+    {
+      default: "all",
+      options: [
+        { label: "All", value: "all" },
+        { label: "Won", value: "won" },
+        { label: "Lost", value: "lost" },
+        { label: "Pending", value: "pending" },
+      ],
+      onChange: (val) => {
+        setFilters((prev) => ({
+          ...prev,
+          status: val,
+          page: 1,
+        }));
+      },
+    },
+  ],
+});
+
+
+const handleTabChange = (key) => {
+  setStatusTab(key);
+
+  setFilters((prev) => ({
+    ...prev,
+    status: key === "all" ? "" : key, // backend filter
+    page: 1,
+  }));
+};
+ 
+
   return (
     <div>
+<Tabs
+  defaultActiveKey="all"
+  activeKey={statusTab}
+  onChange={handleTabChange}
+  items={[
+    { key: "all", label: "All Leads" },
+    { key: "won", label: "Won" },
+    { key: "lost", label: "Lost" },
+    { key: "pending", label: "Pending" },
+  ]}
+  style={{
+    marginBottom: 16,
+    background: "#fff",
+    padding: "8px 16px",
+    borderRadius: "10px",
+    boxShadow: "0 1px 5px rgba(0,0,0,0.05)",
+  }}
+/>
+
       <PageToolbar
         title="Leads"
         showSearch={true}
@@ -152,8 +223,6 @@ const handleSubmitLead = async (values) => {
         onDelete={handleDeleteClick}
         onStatusChange={handleStatusChange}
       />
-
-     
 
       <DeleteLeadModal
         open={deleteOpen}

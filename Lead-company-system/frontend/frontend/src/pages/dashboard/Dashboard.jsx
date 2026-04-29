@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Alert, Button, Spin, Typography } from "antd";
 import { ReloadOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
+import usePageActions from "../../hooks/usePageActions";
 
 import {
   fetchDashboardStats,
@@ -66,6 +67,40 @@ function Dashboard() {
     dispatch(fetchDashboardStats(filters));
   };
 
+usePageActions({
+  actions: [
+    {
+      label: "Refresh",
+      type: "primary",
+      icon: <ReloadOutlined />,
+      onClick: handleRefresh,
+      loading: loading || teamsLoading,
+    },
+    {
+      label: "Export",
+      onClick: () => console.log("Export clicked"),
+    },
+  ],
+
+  filters: [
+    {
+      default: filters.period,
+      options: [
+        { label: "Monthly", value: "monthly" },
+        { label: "Weekly", value: "weekly" },
+        { label: "Daily", value: "daily" },
+      ],
+      onChange: (val) =>
+        setFilters((prev) => ({ ...prev, period: val })),
+    },
+  ],
+
+  onSearch: (value) => {
+    console.log("Search dashboard:", value);
+  },
+});
+
+
   return (
     <div className="min-h-screen bg-[#f4f6f9] p-4 md:p-6">
       <div className="mx-auto max-w-7xl">
@@ -79,14 +114,14 @@ function Dashboard() {
             </Text>
           </div>
 
-          <Button
+          {/* <Button
             type="primary"
             icon={<ReloadOutlined />}
             onClick={handleRefresh}
             loading={loading || teamsLoading}
           >
             Refresh
-          </Button>
+          </Button> */}
         </div>
 
         <div className="mb-6">

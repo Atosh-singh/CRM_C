@@ -5,7 +5,8 @@ const {
   createTeam,
   getTeams,
   updateTeam,
-  deleteTeam
+  deleteTeam,
+  restoreTeam
 } = require("../controllers/Team");
 
 const authMiddleware = require("../middlewares/auth.middleware");
@@ -27,7 +28,7 @@ router.get(
   getTeams
 );
 
-router.put(
+router.patch(
   "/:id",
   authMiddleware,
   permissionMiddleware("UPDATE_TEAM"),
@@ -39,6 +40,13 @@ router.delete(
   authMiddleware,
   permissionMiddleware("DELETE_TEAM"),
   deleteTeam
+);
+
+router.patch(
+  "/restore/:id",
+  authMiddleware,
+  permissionMiddleware("UPDATE_TEAM"),
+  restoreTeam
 );
 
 module.exports = router;

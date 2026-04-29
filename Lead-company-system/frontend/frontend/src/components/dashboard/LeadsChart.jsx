@@ -47,23 +47,39 @@ function LeadsChart({ stats, filters }) {
     autoFit: true
   };
 
-  const pieConfig = {
-    data: statusData,
-    angleField: "value",
-    colorField: "type",
-    radius: 0.9,
-    innerRadius: 0.55,
-    label: {
-      type: "inner",
-      offset: "-30%",
-      content: "{percentage}"
+const pieConfig = {
+  data: statusData,
+  angleField: "value",
+  colorField: "type",
+  radius: 0.9,
+
+  // ❌ REMOVE THIS (causes crash sometimes)
+  // innerRadius: 0.55,
+
+  interactions: [{ type: "element-active" }],
+
+  statistic: {
+    title: false,
+    content: {
+      style: {
+        fontSize: "16px",
+        textAlign: "center",
+        fontWeight: 600,
+      },
+      content: "Leads",
     },
-    legend: {
-      position: "bottom"
-    },
-    height: 300,
-    autoFit: true
-  };
+  },
+
+  // ✅ SAFE LABEL (NO ERROR)
+  label: false,
+
+  legend: {
+    position: "bottom",
+  },
+
+  height: 300,
+  autoFit: true,
+};;
 
   const barConfig = {
     data: teamData,

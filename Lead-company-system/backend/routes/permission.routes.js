@@ -5,7 +5,8 @@ const {
   createPermission,
   getPermissions,
   updatePermission,
-  deletePermission
+  deletePermission,
+  restorePermission
 } = require("../controllers/permission");
 
 const authMiddleware = require("../middlewares/auth.middleware");
@@ -28,7 +29,7 @@ router.get(
 );
 
 
-router.put(
+router.patch(
   "/:id",
   authMiddleware,
   adminMiddleware,
@@ -41,4 +42,11 @@ router.delete(
   adminMiddleware,
   deletePermission
 );
+
+router.patch(
+  "/restore/:id", 
+  authMiddleware,
+   adminMiddleware,
+    restorePermission
+  );
 module.exports = router;

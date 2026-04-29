@@ -36,7 +36,7 @@ export const updateTeam = createAsyncThunk(
   "teams/updateTeam",
   async ({ id, teamData }, { rejectWithValue }) => {
     try {
-      const res = await API.put(`/teams/${id}`, teamData);
+      const res = await API.patch(`/teams/${id}`, teamData);
       return res.data;
     } catch (error) {
       return rejectWithValue(
@@ -57,6 +57,19 @@ export const deleteTeam = createAsyncThunk(
       return rejectWithValue(
         error.response?.data?.message || "Failed to delete team"
       );
+    }
+  }
+);
+
+// RESTORE TEAM
+export const restoreTeam = createAsyncThunk(
+  "teams/restoreTeam",
+  async (id, { rejectWithValue }) => {
+    try {
+      await API.patch(`/teams/restore/${id}`);
+      return id;
+    } catch (error) {
+      return rejectWithValue("Failed to restore team");
     }
   }
 );
@@ -91,7 +104,8 @@ const teamSlice = createSlice({
       })
       .addCase(fetchTeams.fulfilled, (state, action) => {
         state.loading = false;
-        state.teams = action.payload.data || action.payload.teams || [];
+        state.teams = action.payload.data || [];
+state.total = action.payload.total || 0;
       })
       .addCase(fetchTeams.rejected, (state, action) => {
         state.loading = false;
@@ -143,7 +157,18 @@ const teamSlice = createSlice({
       .addCase(deleteTeam.rejected, (state, action) => {
         state.deleteLoading = false;
         state.error = action.payload;
-      });
+      })
+
+
+      .addCase(restoreTeam.fulfilled, (state, action) => {
+  state.teams = state.teams.map((team) =>
+    team._id === action.payload
+      ? { ...team, removed: false, enabled: true }
+      : team
+  );
+})
+
+      
   }
 });
 

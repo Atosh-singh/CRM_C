@@ -19,7 +19,11 @@ function SingleStatCard({ title, value, icon, valueStyle, suffix }) {
             title={title}
             value={value}
             suffix={suffix}
-            valueStyle={valueStyle}
+
+            // ✅ FIXED (new API)
+            styles={{
+              content: valueStyle || {}
+            }}
           />
         </div>
 

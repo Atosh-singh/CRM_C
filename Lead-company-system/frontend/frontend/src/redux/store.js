@@ -6,6 +6,10 @@ import teamReducer from "./slices/teamSlice";
 import roleReducer from "./slices/roleSlice";
 import permissionReducer from "./slices/permissionSlice";
 import dashboardReducer from "./slices/dashboardSlice";
+import pageActionReducer from "./slices/pageActionSlice";
+import carTypeReducer from "./slices/carTypeSlice";
+
+
 
 export const store = configureStore({
   reducer: {
@@ -15,6 +19,8 @@ export const store = configureStore({
     teams: teamReducer,
     roles: roleReducer,
     permissions: permissionReducer,
-    dashboard: dashboardReducer
+    dashboard: dashboardReducer,
+     pageActions: pageActionReducer,
+      carTypes: carTypeReducer
   }
 });

@@ -6,13 +6,12 @@ const {
   getRoles,
   updateRole,
   deleteRole,
+  restoreRole   // ✅ ADD THIS
 } = require("../controllers/role");
 
 const authMiddleware = require("../middlewares/auth.middleware");
 const permissionMiddleware = require("../middlewares/permission.middleware");
 const cache = require("../middlewares/cache.middleware");
-
-// router.use(authMiddleware);
 
 // 🔐 Permission based role management
 
@@ -31,7 +30,7 @@ router.get(
   getRoles
 );
 
-router.put(
+router.patch(
   "/:id",
   authMiddleware,
   permissionMiddleware("UPDATE_ROLE"),
@@ -43,6 +42,14 @@ router.delete(
   authMiddleware,
   permissionMiddleware("DELETE_ROLE"),
   deleteRole
+);
+
+// ♻️ Restore route
+router.patch(
+  "/restore/:id",
+  authMiddleware,
+  permissionMiddleware("UPDATE_ROLE"),
+  restoreRole
 );
 
 module.exports = router;

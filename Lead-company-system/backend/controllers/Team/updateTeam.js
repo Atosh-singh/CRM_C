@@ -27,31 +27,55 @@ const updateTeam = async (req, res) => {
       });
     }
 
-    // 🔹 Name
-    if (name) {
-      const existing = await Team.findOne({
-        _id: { $ne: id },
-        name: name.trim(),
-        removed: false
-      });
+    // =========================
+    // ✅ NAME UPDATE
+    // =========================
+    if (name !== undefined) {
+      const trimmed = name.trim();
 
-      if (existing) {
-        return res.status(409).json({
+      if (!trimmed) {
+        return res.status(400).json({
           success: false,
-          message: "Team name already exists"
+          message: "Team name cannot be empty"
         });
       }
 
-      team.name = name.trim();
+      if (trimmed !== team.name) {
+        const existing = await Team.findOne({
+          _id: { $ne: id },
+          name: trimmed,
+          removed: false
+        });
+
+        if (existing) {
+          return res.status(409).json({
+            success: false,
+            message: "Team name already exists"
+          });
+        }
+
+        team.name = trimmed;
+      }
     }
 
-    // 🔹 Description
+    // =========================
+    // ✅ DESCRIPTION
+    // =========================
     if (description !== undefined) {
-      team.description = description;
+      team.description = description || "";
     }
 
-    // 🔹 CarTypes
-    if (carTypes) {
+    // =========================
+    // ✅ CARTYPES (ONLY IF SENT)
+    // =========================
+    if (carTypes !== undefined) {
+      if (!Array.isArray(carTypes) || carTypes.length === 0) {
+        return res.status(400).json({
+          success: false,
+          message: "carTypes must be a non-empty array"
+        });
+      }
+
       const valid = await CarType.find({
         _id: { $in: carTypes }
       });
@@ -66,7 +90,9 @@ const updateTeam = async (req, res) => {
       team.carTypes = carTypes;
     }
 
-    // 🔹 Lead
+    // =========================
+    // ✅ LEAD
+    // =========================
     if (lead !== undefined) {
       if (lead) {
         const user = await User.findById(lead);
@@ -80,11 +106,17 @@ const updateTeam = async (req, res) => {
       team.lead = lead;
     }
 
-    // 🔹 Other fields
-    if (assignmentType) team.assignmentType = assignmentType;
-    if (maxLeadsPerUser) team.maxLeadsPerUser = maxLeadsPerUser;
+    // =========================
+    // ✅ OTHER FIELDS
+    // =========================
+    if (assignmentType !== undefined) team.assignmentType = assignmentType;
+    if (maxLeadsPerUser !== undefined) team.maxLeadsPerUser = maxLeadsPerUser;
     if (priority !== undefined) team.priority = priority;
-    if (enabled !== undefined) team.enabled = enabled;
+
+    // 🔥 IMPORTANT FIX (your toggle)
+    if (enabled !== undefined) {
+      team.enabled = enabled;
+    }
 
     team.updatedBy = req.user?._id || null;
 
@@ -93,14 +125,14 @@ const updateTeam = async (req, res) => {
     await clearCache("teams");
     await clearCache("users");
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       data: team
     });
 
   } catch (error) {
     console.error("Update Team Error:", error);
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: "Internal Server Error"
     });

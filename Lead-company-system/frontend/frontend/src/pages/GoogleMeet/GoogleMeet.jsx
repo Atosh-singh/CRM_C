@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Button, Card, Input, Space, Typography, message } from "antd";
 import { VideoCameraOutlined, LinkOutlined } from "@ant-design/icons";
 import API from "../../api/axios";
+import usePageActions from "../../hooks/usePageActions";
 
 const { Title, Text } = Typography;
 
@@ -29,6 +30,19 @@ const GoogleMeet = () => {
       setLoading(false);
     }
   };
+
+    // 🔥 ADD THIS
+  usePageActions([
+    {
+      label: "Connect Google",
+      type: "primary",
+      onClick: connectGoogle,
+    },
+    {
+      label: "Create Meeting",
+      onClick: createMeeting,
+    },
+  ]);
 
   return (
     <div style={{ padding: 24 }}>

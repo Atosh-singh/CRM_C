@@ -13,10 +13,13 @@ function PermissionForm({ initialValues, onSubmit }) {
     });
   }, [initialValues, form]);
 
-  const handleFinish = (values) => {
-    onSubmit(values);
-    form.resetFields();
-  };
+ const handleFinish = (values) => {
+  onSubmit({
+    name: values.name.trim(),
+    description: values.description || ""
+  });
+  form.resetFields();
+};
 
   return (
     <Form

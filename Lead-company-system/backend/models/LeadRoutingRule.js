@@ -3,6 +3,10 @@
 const mongoose = require("mongoose");
 
 const leadRoutingRuleSchema = new mongoose.Schema({
+
+  removed: { type: Boolean, default: false },
+    enabled: { type: Boolean, default: true },
+
   name: String,
 
   conditions: {

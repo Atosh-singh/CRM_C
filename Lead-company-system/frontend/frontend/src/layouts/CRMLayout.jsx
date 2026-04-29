@@ -1,6 +1,8 @@
 import { Layout } from "antd";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
+import PageActionBar from "../components/PageActionBar";
+import ModuleNavbar from "../components/ModuleNavbar";
 
 import { useEffect } from "react";
 import { connectSocket } from "../socket";
@@ -20,18 +22,21 @@ function CRMLayout({ children }) {
   return (
     <Layout style={{ minHeight: "100vh" }}>
       
-      {/* Sidebar */}
       <Sidebar />
 
       <Layout>
 
-        {/* Navbar */}
+
         <Navbar />
 
-        {/* Page Content */}
+        <ModuleNavbar />
+
+        {/* ✅ SAFE VERSION */}
+        <PageActionBar />
+
         <Content
           style={{
-            margin: "24px",
+            margin: "16px 24px",
             padding: "24px",
             background: "#fff",
             borderRadius: "10px",
